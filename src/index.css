@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', 'M PLUS Rounded 1c', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+ruby {
+  ruby-align: center;
+}
+
+ruby > rt {
+  user-select: none;
+  font-feature-settings: "vert" 1;
+}
+
+/* Ensure smooth animations on tablets */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
