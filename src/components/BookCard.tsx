@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Book, ReadStatus, ZhuyinDisplayMode, TextSize } from '../types';
 import { LEVEL_INFO } from '../data/booksData';
 import { ZhuyinText } from './ZhuyinText';
-import { speakTaiwanMandarin } from '../utils/speechUtils';
+import { speakTaiwanMandarin, stopSpeaking } from '../utils/speechUtils';
 import {
   BookOpen,
   Volume2,
+  VolumeX,
   ExternalLink,
   CheckCircle2,
   Clock,
@@ -48,9 +49,17 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   const handleSpeak = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isSpeaking) {
+      stopSpeaking();
+      setIsSpeaking(false);
+      return;
+    }
     setIsSpeaking(true);
+    const authorPart = book.author ? `。作者：${book.author}。` : '。';
+    const introPart = book.introduce ? `內容介紹：${book.introduce}` : '';
+    const speechText = `《${book.title}》${authorPart}${introPart}`;
     speakTaiwanMandarin(
-      `${book.title}。適合${book.recommendAge || '小學一年級'}小朋友閱讀。`,
+      speechText,
       () => setIsSpeaking(true),
       () => setIsSpeaking(false)
     );
@@ -204,12 +213,12 @@ export const BookCard: React.FC<BookCardProps> = ({
               onClick={handleSpeak}
               className={`p-2 rounded-xl border transition-all active:scale-90 flex-shrink-0 ${
                 isSpeaking
-                  ? 'bg-amber-500 text-white border-amber-600 animate-pulse'
+                  ? 'bg-rose-500 text-white border-rose-600 animate-pulse'
                   : 'bg-amber-100/70 hover:bg-amber-200 text-amber-900 border-amber-200'
               }`}
-              title="按我聽發音（語音朗讀）"
+              title={isSpeaking ? '點擊停止語音朗讀' : '按我朗讀書名與故事簡介'}
             >
-              <Volume2 className="w-4 h-4" />
+              {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
           </div>
 

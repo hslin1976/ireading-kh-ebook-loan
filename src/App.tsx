@@ -14,6 +14,7 @@ import { BookCard } from './components/BookCard';
 import { BookDetailModal } from './components/BookDetailModal';
 import { LoanGuideModal } from './components/LoanGuideModal';
 import { KidsReadingStats } from './components/KidsReadingStats';
+import { VisitorCounter } from './components/VisitorCounter';
 import { ZhuyinText } from './components/ZhuyinText';
 import {
   BookOpen,
@@ -406,6 +407,9 @@ export default function App() {
             </button>
           </div>
         </div>
+
+        {/* Visitor Counter Section */}
+        <VisitorCounter zhuyinMode={zhuyinMode} />
       </div>
 
       {/* Book Detail Modal */}

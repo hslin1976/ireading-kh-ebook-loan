@@ -292,10 +292,33 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 
               {/* Introduction Text with Zhuyin Option */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
-                <h4 className="text-xs font-extrabold text-slate-500 tracking-wider mb-2 flex items-center gap-1.5">
-                  <Info className="w-4 h-4 text-amber-600" />
-                  <span>故事介紹與精彩內容</span>
-                </h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-extrabold text-slate-500 tracking-wider flex items-center gap-1.5">
+                    <Info className="w-4 h-4 text-amber-600" />
+                    <span>故事介紹與精彩內容</span>
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={handleSpeakTitleAndIntro}
+                    className={`text-xs font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-all shadow-sm ${
+                      isSpeakingIntro
+                        ? 'bg-rose-500 text-white animate-pulse'
+                        : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200'
+                    }`}
+                  >
+                    {isSpeakingIntro ? (
+                      <>
+                        <VolumeX className="w-3.5 h-3.5" />
+                        <span>停止朗讀</span>
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>朗讀故事介紹</span>
+                      </>
+                    )}
+                  </button>
+                </div>
                 <div className="text-sm sm:text-base text-slate-700 leading-relaxed">
                   <ZhuyinText
                     text={book.introduce}
