@@ -19,7 +19,9 @@ export interface Book {
   titleZhuyin: ZhuyinChar[];
   colorDot: ColorDot;
   readLevel: ReadLevel;
-  bookMainUrl: string;
+  bookMainUrl: string; // Default loan URL (NLPI or primary)
+  nlpiUrl?: string; // 國立公共資訊圖書館 (NLPI) direct loan URL
+  hyreadUrl?: string; // 高市圖 / 喜閱網 HyRead direct loan URL
   bookImgUrl: string;
   introduce: string;
   author?: string;

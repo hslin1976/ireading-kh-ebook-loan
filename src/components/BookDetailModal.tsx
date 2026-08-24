@@ -86,8 +86,25 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
     }
   };
 
-  const handleLoanPageClick = () => {
-    window.open(book.bookMainUrl, '_blank', 'noopener,noreferrer');
+  const handleCoverClick = () => {
+    const url = book.nlpiUrl || book.hyreadUrl || book.bookMainUrl;
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleNlpiLoanClick = () => {
+    if (book.nlpiUrl) {
+      window.open(book.nlpiUrl, '_blank', 'noopener,noreferrer');
+    } else if (book.bookMainUrl) {
+      window.open(book.bookMainUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleHyreadLoanClick = () => {
+    if (book.hyreadUrl) {
+      window.open(book.hyreadUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -139,12 +156,12 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
         <div className="p-5 sm:p-7 overflow-y-auto space-y-6">
           {/* Main Book Presentation Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            {/* Left: Big Cover and Loan Button for Tablet */}
+            {/* Left: Big Cover and Vertically Aligned Loan Buttons for Tablet */}
             <div className="md:col-span-5 flex flex-col items-center">
               <div
-                onClick={handleLoanPageClick}
+                onClick={handleCoverClick}
                 className="relative aspect-[3/4] w-full max-w-[240px] bg-slate-50 rounded-2xl border-2 border-amber-200 shadow-lg overflow-hidden flex items-center justify-center p-3 cursor-pointer group hover:scale-[1.02] transition-all"
-                title="點擊前往國資圖電子書借閱頁面"
+                title="點擊前往電子書借閱頁面"
               >
                 <img
                   src={book.bookImgUrl}
@@ -157,25 +174,51 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                 />
                 <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-3 text-center">
                   <ExternalLink className="w-8 h-8 mb-2" />
-                  <span className="font-bold text-sm">點擊開啟電子書</span>
+                  <span className="font-bold text-sm">點擊開啟借閱</span>
                 </div>
               </div>
 
-              {/* Big Tablet Loan Button */}
-              <button
-                type="button"
-                id="modal-loan-btn"
-                onClick={handleLoanPageClick}
-                className="mt-4 w-full max-w-[240px] py-3 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 active:scale-95 text-slate-950 font-black rounded-2xl shadow-md flex items-center justify-center gap-2 text-base transition-all"
-              >
-                <BookOpen className="w-5 h-5" />
-                <span>立即開啟借閱閱讀</span>
-                <ExternalLink className="w-4 h-4" />
-              </button>
+              {/* Vertically Aligned Big Tablet Loan Buttons */}
+              {(book.nlpiUrl || book.hyreadUrl) && (
+                <div className="mt-4 w-full max-w-[240px] flex flex-col gap-2.5">
+                  {/* 1. NLPI Button (Only if available) */}
+                  {book.nlpiUrl && (
+                    <button
+                      type="button"
+                      id="modal-loan-nlpi-btn"
+                      onClick={handleNlpiLoanClick}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 active:scale-95 text-slate-950 font-black rounded-2xl shadow-md flex items-center justify-between text-sm sm:text-base transition-all"
+                    >
+                      <span className="flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-amber-950" />
+                        <span>國資圖借閱</span>
+                      </span>
+                      <ExternalLink className="w-4 h-4 text-amber-900" />
+                    </button>
+                  )}
 
-              <p className="text-[11px] text-slate-500 text-center mt-2">
-                🏛️ 國立公共資訊圖書館電子書平台
-              </p>
+                  {/* 2. HyRead Button (Only if available) */}
+                  {book.hyreadUrl && (
+                    <button
+                      type="button"
+                      id="modal-loan-hyread-btn"
+                      onClick={handleHyreadLoanClick}
+                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black rounded-2xl shadow-md flex items-center justify-between text-sm sm:text-base transition-all"
+                    >
+                      <span className="flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-emerald-100" />
+                        <span>HyRead (高市圖)</span>
+                      </span>
+                      <ExternalLink className="w-4 h-4 text-emerald-100" />
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-col items-center gap-0.5 mt-2 text-[11px] text-slate-500 text-center">
+                {book.nlpiUrl && <span>🏛️ 國立公共資訊圖書館 (NLPI)</span>}
+                {book.hyreadUrl && <span>📚 高雄市立圖書館 / 喜閱網 (HyRead)</span>}
+              </div>
             </div>
 
             {/* Right: Book Details with Zhuyin & TTS */}

@@ -71,10 +71,16 @@ export const BookCard: React.FC<BookCardProps> = ({
     }
   };
 
-  const handleLoanClick = (e: React.MouseEvent) => {
+  const handleNlpiLoanClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Open the official NLPI loan page in a new window/tab
-    window.open(book.bookMainUrl, '_blank', 'noopener,noreferrer');
+    const url = book.nlpiUrl || book.bookMainUrl;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleHyreadLoanClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = book.hyreadUrl || `https://ksml.hyread.com.tw/Template/RSH/search.jsp?search_field=ISBN&search_input=${book.isbn}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -137,17 +143,32 @@ export const BookCard: React.FC<BookCardProps> = ({
         )}
 
         {/* Quick Loan Hover/Touch Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-3">
-          <button
-            type="button"
-            onClick={handleLoanClick}
-            className="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold py-2 px-3 rounded-xl shadow-lg flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all"
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>開啟電子書借閱</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        {(book.nlpiUrl || book.hyreadUrl) && (
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 gap-1.5">
+            {book.nlpiUrl && (
+              <button
+                type="button"
+                onClick={handleNlpiLoanClick}
+                className="w-full bg-amber-400 hover:bg-amber-500 active:scale-95 text-slate-950 font-bold py-1.5 px-2.5 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>國資圖借閱</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+            )}
+            {book.hyreadUrl && (
+              <button
+                type="button"
+                onClick={handleHyreadLoanClick}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-1.5 px-2.5 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>HyRead 借閱</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Status Badge in Corner if read/reading */}
         {userStatus === 'completed' && (
@@ -212,7 +233,7 @@ export const BookCard: React.FC<BookCardProps> = ({
           </p>
         </div>
 
-        {/* Action Controls: Status Switcher & Loan Button */}
+        {/* Action Controls: Status Switcher & Vertically Aligned Loan Buttons */}
         <div className="pt-2 border-t border-amber-100/80 space-y-2">
           {/* Read Status Switcher Pills */}
           <div className="flex items-center justify-between bg-slate-100/90 p-1 rounded-xl gap-1">
@@ -259,17 +280,42 @@ export const BookCard: React.FC<BookCardProps> = ({
             </button>
           </div>
 
-          {/* Primary Ebook Loan Button */}
-          <button
-            type="button"
-            id={`loan-direct-btn-${book.isbn}`}
-            onClick={handleLoanClick}
-            className="w-full py-2.5 px-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 active:scale-[0.98] text-slate-900 font-extrabold rounded-xl shadow-sm border border-amber-400/80 flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
-          >
-            <BookOpen className="w-4 h-4 text-amber-950" />
-            <span>國資圖線上借書</span>
-            <ExternalLink className="w-3.5 h-3.5 text-amber-900" />
-          </button>
+          {/* Vertically Aligned Loan Buttons */}
+          {(book.nlpiUrl || book.hyreadUrl) && (
+            <div className="flex flex-col gap-1.5 pt-1">
+              {/* 1. NLPI Loan Button (Only if available) */}
+              {book.nlpiUrl && (
+                <button
+                  type="button"
+                  id={`loan-nlpi-btn-${book.isbn}`}
+                  onClick={handleNlpiLoanClick}
+                  className="w-full py-2 px-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 active:scale-[0.98] text-slate-950 font-bold rounded-xl shadow-sm border border-amber-400/80 flex items-center justify-between text-xs transition-all"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-amber-950" />
+                    <span>國資圖 (NLPI) 借閱</span>
+                  </span>
+                  <ExternalLink className="w-3 h-3 text-amber-900" />
+                </button>
+              )}
+
+              {/* 2. HyRead Loan Button (Only if available) */}
+              {book.hyreadUrl && (
+                <button
+                  type="button"
+                  id={`loan-hyread-btn-${book.isbn}`}
+                  onClick={handleHyreadLoanClick}
+                  className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl shadow-sm border border-emerald-600 flex items-center justify-between text-xs transition-all"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-emerald-100" />
+                    <span>HyRead (高市圖) 借閱</span>
+                  </span>
+                  <ExternalLink className="w-3 h-3 text-emerald-100" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

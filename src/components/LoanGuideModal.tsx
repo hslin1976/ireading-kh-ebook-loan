@@ -20,7 +20,7 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
           <div className="flex items-center gap-2.5">
             <span className="text-2xl">📖</span>
             <h2 className="text-lg sm:text-xl font-black text-slate-950">
-              國資圖電子書借閱小指南
+              雙平台電子書借閱小指南
             </h2>
           </div>
           <button
@@ -35,8 +35,30 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
         {/* Content Body */}
         <div className="p-6 sm:p-8 space-y-6 overflow-y-auto max-h-[75vh]">
           <p className="text-sm sm:text-base text-slate-700 font-medium leading-relaxed bg-amber-50 p-3.5 rounded-2xl border border-amber-200">
-            💡 本平台書籍均連結至<strong>「國立公共資訊圖書館（NLPI）電子書服務平台」</strong>，全國讀者與小朋友皆可免費借閱線上圖書！
+            💡 本平台提供<strong>「國資圖 (NLPI)」</strong>與<strong>「HyRead (高市圖/喜閱網)」</strong>雙借閱管道，每本書皆提供垂直並列借閱按鈕，全台灣的小朋友與家長皆可免費線上借閱！
           </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-300">
+              <div className="font-extrabold text-xs text-amber-900 flex items-center gap-1.5 mb-1">
+                <BookOpen className="w-4 h-4 text-amber-700" />
+                <span>國資圖 (NLPI)</span>
+              </div>
+              <p className="text-xs text-slate-600">
+                國立公共資訊圖書館電子書服務平台，全台讀者皆可免費註冊與登入借閱。
+              </p>
+            </div>
+
+            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-300">
+              <div className="font-extrabold text-xs text-emerald-900 flex items-center gap-1.5 mb-1">
+                <BookOpen className="w-4 h-4 text-emerald-700" />
+                <span>HyRead (高市圖/喜閱網)</span>
+              </div>
+              <p className="text-xs text-slate-600">
+                高雄市立圖書館 HyRead 電子書平台，高雄喜閱網推薦好書隨點隨借！
+              </p>
+            </div>
+          </div>
 
           <div className="space-y-4">
             {/* Step 1 */}
@@ -47,10 +69,10 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
               <div className="space-y-1">
                 <h3 className="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-amber-600" />
-                  點選喜歡的童書封面
+                  選擇借閱平台（國資圖 或 HyRead）
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  在書庫中找到想讀的書，點擊<strong>書本封面</strong>或<strong>「國資圖線上借書」</strong>按鈕，就會自動打開專屬借閱頁面。
+                  每張童書卡片下方均有<strong>垂直排列的兩個借閱按鈕</strong>（黃色國資圖、綠色HyRead），點選任一按鈕即可直接開啟借閱頁面。
                 </p>
               </div>
             </div>
@@ -66,7 +88,7 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
                   登入圖書館借閱證帳號
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  可以使用<strong>各縣市公共圖書館借書證</strong>、<strong>學校數位學生證</strong>或<strong>身分證號碼</strong>登入（小朋友可請爸爸媽媽協助登入一次）。
+                  可以使用<strong>各縣市公共圖書館借書證</strong>、<strong>學校數位學生證</strong>或<strong>身分證號碼</strong>登入（首次可請家長或老師協助登入）。
                 </p>
               </div>
             </div>
@@ -82,7 +104,7 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
                   在平板或手機上立即翻頁閱讀
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  按下<strong>「線上閱讀」</strong>或<strong>「借閱」</strong>即可立即翻閱全彩繪本！借期到了系統會自動歸還，完全不需擔心逾期。
+                  按下<strong>「線上閱讀」</strong>或<strong>「借閱」</strong>即可立即翻閱全彩繪本！到期自動歸還，免除逾期煩惱。
                 </p>
               </div>
             </div>
