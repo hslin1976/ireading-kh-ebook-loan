@@ -87,6 +87,7 @@ export default function App() {
   const [activeBookModal, setActiveBookModal] = useState<Book | null>(null);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [globalRefreshKey, setGlobalRefreshKey] = useState(0);
 
   // Save user reading state
   useEffect(() => {
@@ -329,7 +330,7 @@ export default function App() {
 
         {/* Books Grid */}
         {filteredBooks.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div key={globalRefreshKey} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {filteredBooks.map((book) => {
               const bookState = userBooks[book.isbn] || {
                 status: 'unread',
@@ -442,6 +443,19 @@ export default function App() {
         onClose={() => setIsStatsOpen(false)}
         books={BOOKS_DATA}
         userBooks={userBooks}
+        onResetAllRatings={() => {
+          // Clear user rating stars on all books in state
+          setUserBooks((prev) => {
+            const next = { ...prev };
+            for (const isbn of Object.keys(next)) {
+              if (next[isbn]) {
+                next[isbn] = { ...next[isbn], rating: 0 };
+              }
+            }
+            return next;
+          });
+          setGlobalRefreshKey((k) => k + 1);
+        }}
       />
     </div>
   );

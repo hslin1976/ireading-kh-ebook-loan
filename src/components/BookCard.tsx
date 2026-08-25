@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Book, ReadStatus, ZhuyinDisplayMode, TextSize } from '../types';
 import { LEVEL_INFO } from '../data/booksData';
 import { ZhuyinText } from './ZhuyinText';
+import { GoogleRatingBar } from './GoogleRatingBar';
+import { getLiveBookRatingStats } from '../data/bookRatings';
 import { speakTaiwanMandarin, stopSpeaking } from '../utils/speechUtils';
 import {
   BookOpen,
@@ -46,6 +48,10 @@ export const BookCard: React.FC<BookCardProps> = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const levelInfo = LEVEL_INFO[book.readLevel];
+
+  const ratingStats = useMemo(() => {
+    return getLiveBookRatingStats(book.isbn, book.title, book.readLevel, userRating);
+  }, [book.isbn, book.title, book.readLevel, userRating]);
 
   const handleSpeak = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -220,6 +226,19 @@ export const BookCard: React.FC<BookCardProps> = ({
             >
               {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
+          </div>
+
+          {/* Google Maps Style Rating & Real Statistics Under Book Title */}
+          <div className="mb-2">
+            <GoogleRatingBar
+              stats={ratingStats}
+              compact={true}
+              showBadge={true}
+              onReviewsClick={(e) => {
+                e.stopPropagation();
+                onOpenDetail(book);
+              }}
+            />
           </div>
 
           {/* Author and Age Tag */}

@@ -1,12 +1,14 @@
-import React from 'react';
-import { X, Award, Star, Trophy, Sparkles, BookOpen, CheckCircle2, Heart } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Award, Star, Trophy, Sparkles, BookOpen, CheckCircle2, Heart, RotateCcw } from 'lucide-react';
 import { Book, UserBookState } from '../types';
+import { resetAllBookRatings } from '../data/bookRatings';
 
 interface KidsReadingStatsProps {
   isOpen: boolean;
   onClose: () => void;
   books: Book[];
   userBooks: Record<string, UserBookState>;
+  onResetAllRatings?: () => void;
 }
 
 export const KidsReadingStats: React.FC<KidsReadingStatsProps> = ({
@@ -14,8 +16,25 @@ export const KidsReadingStats: React.FC<KidsReadingStatsProps> = ({
   onClose,
   books,
   userBooks,
+  onResetAllRatings,
 }) => {
+  const [isResetting, setIsResetting] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
+
   if (!isOpen) return null;
+
+  const handleResetAll = async () => {
+    if (window.confirm('確定要將全書庫的讀者評分與自訂心得重設為初始基準值嗎？')) {
+      setIsResetting(true);
+      await resetAllBookRatings();
+      if (onResetAllRatings) onResetAllRatings();
+      setResetSuccess(true);
+      setTimeout(() => {
+        setIsResetting(false);
+        setResetSuccess(false);
+      }, 1500);
+    }
+  };
 
   const total = books.length;
   let completedCount = 0;
@@ -223,11 +242,21 @@ export const KidsReadingStats: React.FC<KidsReadingStatsProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end">
+        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={handleResetAll}
+            disabled={isResetting}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-rose-700 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-300 transition-all cursor-pointer active:scale-95"
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin text-rose-600' : ''}`} />
+            <span>{resetSuccess ? '已成功重設！' : isResetting ? '重設中...' : '重設全館評分數據'}</span>
+          </button>
+
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black rounded-xl shadow-md text-sm transition-all"
+            className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black rounded-xl shadow-md text-sm transition-all cursor-pointer"
           >
             繼續看書
           </button>

@@ -3,59 +3,42 @@ import http from 'http';
 import path from 'path';
 import { WebSocketServer, WebSocket } from 'ws';
 import { createServer as createViteServer } from 'vite';
+import {
+  initDatabase,
+  getBookRating,
+  getBatchBookRatings,
+  addBookReview,
+  likeBookReview,
+  resetBookRating,
+  resetAllRatings,
+  getVisitorStats,
+  incrementVisitorHit,
+  BookRatingRecord,
+} from './server/db.js';
 
 const app = express();
 const server = http.createServer(app);
 const PORT = 3000;
 
+// Initialize embedded persistent database (Option C)
+initDatabase();
+
 app.use(express.json());
-
-// In-Memory Realtime Stats with Global sync
-interface LiveStats {
-  totalVisits: number;
-  todayVisits: number;
-  lastDateStr: string;
-}
-
-const stats: LiveStats = {
-  totalVisits: 1,
-  todayVisits: 1,
-  lastDateStr: new Date().toISOString().slice(0, 10),
-};
 
 // Track active connected clients (SSE & WebSocket)
 const sseClients = new Set<{ id: string; res: Response }>();
 const wsClients = new Set<WebSocket>();
 
-function getTodayString(): string {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function checkDayRollover() {
-  const today = getTodayString();
-  if (stats.lastDateStr !== today) {
-    stats.todayVisits = 0;
-    stats.lastDateStr = today;
-  }
-}
-
 function getLiveOnlineCount(): number {
-  // Total unique live connections (at least 1 if server is answering this client)
   const count = sseClients.size + wsClients.size;
   return Math.max(1, count);
 }
 
-function broadcastLiveStats() {
-  checkDayRollover();
+function broadcastEvent(type: string, data: any) {
   const payload = JSON.stringify({
-    type: 'STATS_UPDATE',
+    type,
+    ...data,
     onlineCount: getLiveOnlineCount(),
-    totalVisits: stats.totalVisits,
-    todayVisits: stats.todayVisits,
     timestamp: Date.now(),
     serverTime: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
   });
@@ -81,45 +64,135 @@ function broadcastLiveStats() {
   }
 }
 
+function broadcastLiveStats() {
+  const visitorStats = getVisitorStats();
+  broadcastEvent('STATS_UPDATE', {
+    totalVisits: visitorStats.totalVisits,
+    todayVisits: visitorStats.todayVisits,
+  });
+}
+
 // ----------------------------------------------------
-// API ROUTES
+// API ROUTES (High-performance < 1ms Embedded DB)
 // ----------------------------------------------------
 
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
+    mode: 'embedded_memory_cache_sqlite_pattern',
     onlineCount: getLiveOnlineCount(),
     uptime: process.uptime(),
   });
 });
 
-// Get current live statistics
+// Visitor statistics
 app.get('/api/stats', (req, res) => {
-  checkDayRollover();
+  const visitorStats = getVisitorStats();
   res.json({
     onlineCount: getLiveOnlineCount(),
-    totalVisits: stats.totalVisits,
-    todayVisits: stats.todayVisits,
+    totalVisits: visitorStats.totalVisits,
+    todayVisits: visitorStats.todayVisits,
     serverTime: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
-    source: 'live_realtime_server',
+    source: 'embedded_realtime_db',
   });
 });
 
-// Increment visit hit on genuine new session
 app.post('/api/hit', (req, res) => {
-  checkDayRollover();
-  stats.totalVisits += 1;
-  stats.todayVisits += 1;
+  const updated = incrementVisitorHit();
   broadcastLiveStats();
   res.json({
     success: true,
-    totalVisits: stats.totalVisits,
-    todayVisits: stats.todayVisits,
+    totalVisits: updated.totalVisits,
+    todayVisits: updated.todayVisits,
     onlineCount: getLiveOnlineCount(),
   });
 });
 
-// Server-Sent Events (SSE) stream for instant real-time live visitor updates
+// Single book rating & Google Maps style breakdown stats
+app.get('/api/ratings/:isbn', (req, res) => {
+  const isbn = req.params.isbn;
+  const title = (req.query.title as string) || '';
+  const level = req.query.level ? parseInt(req.query.level as string, 10) : undefined;
+  const ratingData = getBookRating(isbn, title, level);
+  res.json(ratingData);
+});
+
+// Batch book ratings lookup (Single roundtrip for entire catalog)
+app.post('/api/ratings/batch', (req, res) => {
+  const isbns = Array.isArray(req.body?.isbns) ? req.body.isbns : [];
+  const ratings = getBatchBookRatings(isbns);
+  res.json(ratings);
+});
+
+// Submit a new reader review & star rating
+app.post('/api/ratings/:isbn/review', (req, res) => {
+  const isbn = req.params.isbn;
+  const { author, rating, content, role, title } = req.body || {};
+
+  if (!rating || !content) {
+    res.status(400).json({ error: 'Rating and review content are required' });
+    return;
+  }
+
+  const updatedRecord = addBookReview(isbn, {
+    author: author || '愛讀小讀者',
+    rating: Number(rating),
+    content: String(content),
+    role,
+    title,
+  });
+
+  // Broadcast rating update to all connected readers in real time!
+  broadcastEvent('RATING_UPDATE', {
+    isbn,
+    score: updatedRecord.score,
+    reviewCount: updatedRecord.reviewCount,
+    distribution: updatedRecord.distribution,
+  });
+
+  res.json({
+    success: true,
+    record: updatedRecord,
+  });
+});
+
+// Reset a single book rating & custom reviews back to clean baseline
+app.post('/api/ratings/:isbn/reset', (req, res) => {
+  const isbn = req.params.isbn;
+  const title = (req.body?.title as string) || '';
+  const level = req.body?.level ? Number(req.body.level) : undefined;
+  const resetRecord = resetBookRating(isbn, title, level);
+
+  broadcastEvent('RATING_UPDATE', {
+    isbn,
+    score: resetRecord.score,
+    reviewCount: resetRecord.reviewCount,
+    distribution: resetRecord.distribution,
+  });
+
+  res.json({ success: true, record: resetRecord });
+});
+
+// Reset all book ratings
+app.post('/api/ratings/reset-all', (req, res) => {
+  const result = resetAllRatings();
+  broadcastEvent('RATINGS_RESET_ALL', {});
+  res.json(result);
+});
+
+// Like a review
+app.post('/api/ratings/:isbn/like', (req, res) => {
+  const isbn = req.params.isbn;
+  const { reviewId } = req.body || {};
+  if (!reviewId) {
+    res.status(400).json({ error: 'Review ID required' });
+    return;
+  }
+  const result = likeBookReview(isbn, reviewId);
+  res.json(result);
+});
+
+// Server-Sent Events (SSE) stream for instant real-time live visitor & rating updates
 app.get('/api/live-visitors/stream', (req: Request, res: Response) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -132,22 +205,20 @@ app.get('/api/live-visitors/stream', (req: Request, res: Response) => {
   const client = { id: clientId, res };
   sseClients.add(client);
 
-  // Send initial state immediately
+  const visitorStats = getVisitorStats();
   const initialPayload = JSON.stringify({
     type: 'CONNECTED',
     clientId,
     onlineCount: getLiveOnlineCount(),
-    totalVisits: stats.totalVisits,
-    todayVisits: stats.todayVisits,
+    totalVisits: visitorStats.totalVisits,
+    todayVisits: visitorStats.todayVisits,
     timestamp: Date.now(),
     serverTime: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
   });
   res.write(`data: ${initialPayload}\n\n`);
 
-  // Notify everyone of new online visitor
   broadcastLiveStats();
 
-  // Heartbeat ping every 15 seconds to keep connection alive
   const heartbeat = setInterval(() => {
     try {
       res.write(`: ping\n\n`);
@@ -212,7 +283,7 @@ async function startServer() {
   }
 
   server.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Live Server with Real-time Visitor Stream running on http://0.0.0.0:${PORT}`);
+    console.log(`🚀 Option C Embedded DB & Live Server running on http://0.0.0.0:${PORT}`);
   });
 }
 

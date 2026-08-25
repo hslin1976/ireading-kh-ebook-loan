@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Book, ReadStatus, ZhuyinDisplayMode, TextSize } from '../types';
 import { LEVEL_INFO } from '../data/booksData';
 import { ZhuyinText } from './ZhuyinText';
+import { GoogleRatingBar } from './GoogleRatingBar';
+import { GoogleRatingSection } from './GoogleRatingSection';
+import { getLiveBookRatingStats } from '../data/bookRatings';
 import { speakTaiwanMandarin, stopSpeaking } from '../utils/speechUtils';
 import {
   X,
@@ -52,10 +55,15 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 }) => {
   const [isSpeakingIntro, setIsSpeakingIntro] = useState(false);
   const [localNotes, setLocalNotes] = useState(userNotes || '');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   if (!book) return null;
 
   const levelInfo = LEVEL_INFO[book.readLevel];
+
+  const ratingStats = useMemo(() => {
+    return getLiveBookRatingStats(book.isbn, book.title, book.readLevel, userRating);
+  }, [book.isbn, book.title, book.readLevel, userRating, refreshKey]);
 
   const handleSpeakTitleAndIntro = () => {
     if (isSpeakingIntro) {
@@ -258,8 +266,17 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                   </button>
                 </div>
 
+                {/* Google Maps Style Rating & Real Statistics Under Book Title */}
+                <div className="mt-2 pt-2 border-t border-amber-200/60">
+                  <GoogleRatingBar
+                    stats={ratingStats}
+                    compact={false}
+                    showBadge={true}
+                  />
+                </div>
+
                 {/* Metadata Tags */}
-                <div className="flex flex-wrap gap-2 text-xs text-slate-600 mt-3 pt-3 border-t border-amber-200/60">
+                <div className="flex flex-wrap gap-2 text-xs text-slate-600 mt-2 pt-2 border-t border-amber-200/60">
                   {book.author && (
                     <span className="bg-white px-2.5 py-1 rounded-lg font-medium border border-amber-200">
                       ✍️ 作者：{book.author}
@@ -275,6 +292,16 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                   </span>
                 </div>
               </div>
+
+              {/* Google Maps Style Detailed Ratings & Real Breakdown */}
+              <GoogleRatingSection
+                stats={ratingStats}
+                isbn={book.isbn}
+                bookTitle={book.title}
+                userRating={userRating}
+                onUpdateRating={onUpdateRating}
+                onRefreshStats={() => setRefreshKey((k) => k + 1)}
+              />
 
               {/* Tags Cloud */}
               {book.tags && (
