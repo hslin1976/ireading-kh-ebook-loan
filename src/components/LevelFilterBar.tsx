@@ -1,23 +1,29 @@
 import React from 'react';
-import { ReadLevel, ReadStatus } from '../types';
+import { ReadLevel, ReadStatus, LibraryFilter } from '../types';
 import { LEVEL_INFO } from '../data/booksData';
-import { Bookmark, Clock, CheckCircle2, Heart, Sparkles, BookOpen } from 'lucide-react';
+import { Bookmark, Clock, CheckCircle2, Heart, Sparkles, BookOpen, Building2, Cloud, Library } from 'lucide-react';
 
 interface LevelFilterBarProps {
   selectedLevel: ReadLevel | 'all';
+  selectedLibrary: LibraryFilter;
   selectedStatus: ReadStatus | 'all' | 'favorites';
   levelCounts: Record<string, number>;
+  libraryCounts: Record<LibraryFilter, number>;
   statusCounts: Record<string, number>;
   onSelectLevel: (level: ReadLevel | 'all') => void;
+  onSelectLibrary: (library: LibraryFilter) => void;
   onSelectStatus: (status: ReadStatus | 'all' | 'favorites') => void;
 }
 
 export const LevelFilterBar: React.FC<LevelFilterBarProps> = ({
   selectedLevel,
+  selectedLibrary,
   selectedStatus,
   levelCounts,
+  libraryCounts,
   statusCounts,
   onSelectLevel,
+  onSelectLibrary,
   onSelectStatus,
 }) => {
   return (
@@ -126,7 +132,101 @@ export const LevelFilterBar: React.FC<LevelFilterBarProps> = ({
         </div>
       </div>
 
-      {/* 2. Reading Status Filter Tabs */}
+      {/* 2. Library Filter Menu (Under Read Level) */}
+      <div className="bg-white/90 backdrop-blur rounded-2xl p-3 border-2 border-indigo-100 shadow-sm">
+        <div className="flex items-center justify-between mb-2 px-1">
+          <span className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
+            <Library className="w-4 h-4 text-indigo-600" />
+            <span>借閱書庫平台 (Library)：</span>
+          </span>
+          <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
+            快速篩選指定借閱管道的電子館藏
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {/* All Libraries */}
+          <button
+            type="button"
+            id="filter-lib-all"
+            onClick={() => onSelectLibrary('all')}
+            className={`py-2 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 border-2 transition-all active:scale-95 ${
+              selectedLibrary === 'all'
+                ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm scale-[1.02]'
+                : 'bg-indigo-50/50 hover:bg-indigo-100 text-slate-700 border-indigo-100'
+            }`}
+          >
+            <span>🌐 全部書庫</span>
+            <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
+              selectedLibrary === 'all' ? 'bg-indigo-800 text-indigo-100' : 'bg-indigo-100 text-indigo-900'
+            }`}>
+              {libraryCounts.all || 0}
+            </span>
+          </button>
+
+          {/* NLPI: 國立公共資訊圖書館 */}
+          <button
+            type="button"
+            id="filter-lib-nlpi"
+            onClick={() => onSelectLibrary('nlpi')}
+            className={`py-2 px-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 border-2 transition-all active:scale-95 ${
+              selectedLibrary === 'nlpi'
+                ? 'bg-amber-400 text-slate-950 border-amber-500 shadow-sm scale-[1.02]'
+                : 'bg-amber-50/50 hover:bg-amber-100 text-slate-700 border-amber-200'
+            }`}
+          >
+            <Building2 className="w-3.5 h-3.5 text-amber-700 flex-shrink-0" />
+            <span className="truncate">國資圖 (NLPI)</span>
+            <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
+              selectedLibrary === 'nlpi' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-900'
+            }`}>
+              {libraryCounts.nlpi || 0}
+            </span>
+          </button>
+
+          {/* HyRead: 高雄市立圖書館 */}
+          <button
+            type="button"
+            id="filter-lib-hyread"
+            onClick={() => onSelectLibrary('hyread')}
+            className={`py-2 px-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 border-2 transition-all active:scale-95 ${
+              selectedLibrary === 'hyread'
+                ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm scale-[1.02]'
+                : 'bg-emerald-50/50 hover:bg-emerald-100 text-slate-700 border-emerald-200'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+            <span className="truncate">HyRead (高市圖)</span>
+            <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
+              selectedLibrary === 'hyread' ? 'bg-emerald-800 text-emerald-100' : 'bg-emerald-100 text-emerald-900'
+            }`}>
+              {libraryCounts.hyread || 0}
+            </span>
+          </button>
+
+          {/* Cloud: 台灣雲端書庫 (高市圖) */}
+          <button
+            type="button"
+            id="filter-lib-cloud"
+            onClick={() => onSelectLibrary('cloud')}
+            className={`py-2 px-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 border-2 transition-all active:scale-95 ${
+              selectedLibrary === 'cloud'
+                ? 'bg-purple-600 text-white border-purple-700 shadow-sm scale-[1.02]'
+                : 'bg-purple-50/50 hover:bg-purple-100 text-slate-700 border-purple-200'
+            }`}
+          >
+            <Cloud className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
+            <span className="truncate">台灣雲端書庫 (高市圖)</span>
+            <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
+              selectedLibrary === 'cloud' ? 'bg-purple-800 text-purple-100' : 'bg-purple-100 text-purple-900'
+            }`}>
+              {libraryCounts.cloud || 0}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* 3. Reading Status Filter Tabs */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-extrabold text-slate-600 px-1">
           📌 閱讀狀態整理：

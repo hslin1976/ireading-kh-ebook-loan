@@ -6,6 +6,7 @@ import {
   UserBookState,
   ZhuyinDisplayMode,
   TextSize,
+  LibraryFilter,
 } from './types';
 import { BOOKS_DATA, LEVEL_INFO } from './data/booksData';
 import { KidsHeader } from './components/KidsHeader';
@@ -80,6 +81,7 @@ export default function App() {
 
   // Filter & Search states
   const [selectedLevel, setSelectedLevel] = useState<ReadLevel | 'all'>('all');
+  const [selectedLibrary, setSelectedLibrary] = useState<LibraryFilter>('all');
   const [selectedStatus, setSelectedStatus] = useState<ReadStatus | 'all' | 'favorites'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -153,11 +155,26 @@ export default function App() {
     }));
   };
 
-  // Calculate Level and Status Counts
+  // Calculate Level, Library and Status Counts
   const levelCounts = useMemo(() => {
     const counts: Record<string, number> = { all: BOOKS_DATA.length, '1': 0, '2': 0, '3': 0, '4': 0 };
     BOOKS_DATA.forEach((b) => {
       counts[String(b.readLevel)] = (counts[String(b.readLevel)] || 0) + 1;
+    });
+    return counts;
+  }, []);
+
+  const libraryCounts = useMemo(() => {
+    const counts: Record<LibraryFilter, number> = {
+      all: BOOKS_DATA.length,
+      nlpi: 0,
+      hyread: 0,
+      cloud: 0,
+    };
+    BOOKS_DATA.forEach((b) => {
+      if (b.nlpiUrl) counts.nlpi += 1;
+      if (b.hyreadUrl) counts.hyread += 1;
+      if (b.cloudUrl) counts.cloud += 1;
     });
     return counts;
   }, []);
@@ -188,7 +205,18 @@ export default function App() {
         return false;
       }
 
-      // 2. Status Filter
+      // 2. Library Filter
+      if (selectedLibrary === 'nlpi' && !book.nlpiUrl) {
+        return false;
+      }
+      if (selectedLibrary === 'hyread' && !book.hyreadUrl) {
+        return false;
+      }
+      if (selectedLibrary === 'cloud' && !book.cloudUrl) {
+        return false;
+      }
+
+      // 3. Status Filter
       if (selectedStatus === 'favorites') {
         if (!userBooks[book.isbn]?.favorite) return false;
       } else if (selectedStatus !== 'all') {
@@ -196,7 +224,7 @@ export default function App() {
         if (currentStatus !== selectedStatus) return false;
       }
 
-      // 3. Search Query
+      // 4. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.trim().toLowerCase();
         const titleMatch = book.title.toLowerCase().includes(q);
@@ -215,7 +243,7 @@ export default function App() {
 
       return true;
     });
-  }, [selectedLevel, selectedStatus, searchQuery, userBooks]);
+  }, [selectedLevel, selectedLibrary, selectedStatus, searchQuery, userBooks]);
 
   const completedTotal = statusCounts.completed || 0;
 
@@ -245,13 +273,16 @@ export default function App() {
           onOpenStats={() => setIsStatsOpen(true)}
         />
 
-        {/* Level and Read Status Filter Bar */}
+        {/* Level, Library and Read Status Filter Bar */}
         <LevelFilterBar
           selectedLevel={selectedLevel}
+          selectedLibrary={selectedLibrary}
           selectedStatus={selectedStatus}
           levelCounts={levelCounts}
+          libraryCounts={libraryCounts}
           statusCounts={statusCounts}
           onSelectLevel={setSelectedLevel}
+          onSelectLibrary={setSelectedLibrary}
           onSelectStatus={setSelectedStatus}
         />
 
@@ -294,12 +325,29 @@ export default function App() {
         )}
 
         {/* Results Counter & Current Filter Summary */}
-        <div className="flex items-center justify-between mb-4 px-1">
-          <div className="text-xs sm:text-sm font-extrabold text-slate-700 flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4 px-1">
+          <div className="text-xs sm:text-sm font-extrabold text-slate-700 flex flex-wrap items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-500" />
             <span>
               共有 <strong className="text-amber-600 text-base">{filteredBooks.length}</strong> 本好書
             </span>
+            {selectedLibrary !== 'all' && (
+              <span
+                className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                  selectedLibrary === 'nlpi'
+                    ? 'bg-amber-200 text-amber-950'
+                    : selectedLibrary === 'hyread'
+                    ? 'bg-emerald-200 text-emerald-950'
+                    : 'bg-purple-200 text-purple-950'
+                }`}
+              >
+                {selectedLibrary === 'nlpi'
+                  ? '🏛️ 國資圖 (NLPI)'
+                  : selectedLibrary === 'hyread'
+                  ? '📚 HyRead (高市圖)'
+                  : '☁️ 台灣雲端書庫 (高市圖)'}
+              </span>
+            )}
             {selectedStatus !== 'all' && (
               <span className="bg-amber-200 text-amber-950 px-2 py-0.5 rounded-full text-xs font-bold">
                 {selectedStatus === 'unread'
@@ -366,6 +414,7 @@ export default function App() {
               type="button"
               onClick={() => {
                 setSelectedLevel('all');
+                setSelectedLibrary('all');
                 setSelectedStatus('all');
                 setSearchQuery('');
               }}

@@ -21,6 +21,7 @@ import {
   Info,
   Calendar,
   Layers,
+  Cloud,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -95,7 +96,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   };
 
   const handleCoverClick = () => {
-    const url = book.nlpiUrl || book.hyreadUrl || book.bookMainUrl;
+    const url = book.nlpiUrl || book.hyreadUrl || book.cloudUrl || book.bookMainUrl;
     if (url) {
       window.open(url, '_blank', 'noopener,noreferrer');
     }
@@ -112,6 +113,12 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   const handleHyreadLoanClick = () => {
     if (book.hyreadUrl) {
       window.open(book.hyreadUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleCloudLoanClick = () => {
+    if (book.cloudUrl) {
+      window.open(book.cloudUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -187,7 +194,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
               </div>
 
               {/* Vertically Aligned Big Tablet Loan Buttons */}
-              {(book.nlpiUrl || book.hyreadUrl) && (
+              {(book.nlpiUrl || book.hyreadUrl || book.cloudUrl) && (
                 <div className="mt-4 w-full max-w-[240px] flex flex-col gap-2.5">
                   {/* 1. NLPI Button (Only if available) */}
                   {book.nlpiUrl && (
@@ -220,12 +227,29 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                       <ExternalLink className="w-4 h-4 text-emerald-100" />
                     </button>
                   )}
+
+                  {/* 3. Taiwan Cloud Library Button (Only if available) */}
+                  {book.cloudUrl && (
+                    <button
+                      type="button"
+                      id="modal-loan-cloud-btn"
+                      onClick={handleCloudLoanClick}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 active:scale-95 text-white font-black rounded-2xl shadow-md flex items-center justify-between text-sm sm:text-base transition-all"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Cloud className="w-5 h-5 text-indigo-200" />
+                        <span>台灣雲端書庫@高雄</span>
+                      </span>
+                      <ExternalLink className="w-4 h-4 text-indigo-200" />
+                    </button>
+                  )}
                 </div>
               )}
 
               <div className="flex flex-col items-center gap-0.5 mt-2 text-[11px] text-slate-500 text-center">
                 {book.nlpiUrl && <span>🏛️ 國立公共資訊圖書館 (NLPI)</span>}
                 {book.hyreadUrl && <span>📚 高雄市立圖書館 / 喜閱網 (HyRead)</span>}
+                {book.cloudUrl && <span>☁️ 台灣雲端書庫@高雄市</span>}
               </div>
             </div>
 

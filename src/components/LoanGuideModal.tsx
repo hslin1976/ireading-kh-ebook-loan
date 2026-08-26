@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, BookOpen, Key, Tablet, CheckCircle, ExternalLink, HelpCircle } from 'lucide-react';
+import { X, BookOpen, Key, Tablet, CheckCircle, ExternalLink, HelpCircle, Cloud } from 'lucide-react';
 
 interface LoanGuideModalProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
           <div className="flex items-center gap-2.5">
             <span className="text-2xl">📖</span>
             <h2 className="text-lg sm:text-xl font-black text-slate-950">
-              雙平台電子書借閱小指南
+              多平台電子書借閱小指南
             </h2>
           </div>
           <button
@@ -35,27 +35,37 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
         {/* Content Body */}
         <div className="p-6 sm:p-8 space-y-6 overflow-y-auto max-h-[75vh]">
           <p className="text-sm sm:text-base text-slate-700 font-medium leading-relaxed bg-amber-50 p-3.5 rounded-2xl border border-amber-200">
-            💡 本平台提供<strong>「國資圖 (NLPI)」</strong>與<strong>「HyRead (高市圖/喜閱網)」</strong>雙借閱管道，每本書皆提供垂直並列借閱按鈕，全台灣的小朋友與家長皆可免費線上借閱！
+            💡 本平台提供<strong>「國資圖 (NLPI)」</strong>、<strong>「HyRead (高市圖/喜閱網)」</strong>與<strong>「台灣雲端書庫@高雄市」</strong>借閱管道，每本書皆提供專屬借閱按鈕，全台灣的小朋友與家長皆可免費線上借閱！
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-2">
             <div className="p-3 bg-amber-50 rounded-xl border border-amber-300">
               <div className="font-extrabold text-xs text-amber-900 flex items-center gap-1.5 mb-1">
                 <BookOpen className="w-4 h-4 text-amber-700" />
                 <span>國資圖 (NLPI)</span>
               </div>
               <p className="text-xs text-slate-600">
-                國立公共資訊圖書館電子書服務平台，全台讀者皆可免費註冊與登入借閱。
+                國立公共資訊圖書館，全台讀者皆可免費註冊與登入借閱。
               </p>
             </div>
 
             <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-300">
               <div className="font-extrabold text-xs text-emerald-900 flex items-center gap-1.5 mb-1">
                 <BookOpen className="w-4 h-4 text-emerald-700" />
-                <span>HyRead (高市圖/喜閱網)</span>
+                <span>HyRead (高市圖)</span>
               </div>
               <p className="text-xs text-slate-600">
-                高雄市立圖書館 HyRead 電子書平台，高雄喜閱網推薦好書隨點隨借！
+                高雄市立圖書館 HyRead 電子書平台，喜閱網推薦好書隨點隨借！
+              </p>
+            </div>
+
+            <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-300">
+              <div className="font-extrabold text-xs text-indigo-900 flex items-center gap-1.5 mb-1">
+                <Cloud className="w-4 h-4 text-indigo-700" />
+                <span>台灣雲端書庫@高雄</span>
+              </div>
+              <p className="text-xs text-slate-600">
+                高雄市民讀者享有每月免費借閱點數，隨租隨閱免排隊！
               </p>
             </div>
           </div>
@@ -69,10 +79,10 @@ export const LoanGuideModal: React.FC<LoanGuideModalProps> = ({ isOpen, onClose 
               <div className="space-y-1">
                 <h3 className="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-amber-600" />
-                  選擇借閱平台（國資圖 或 HyRead）
+                  選擇借閱平台（國資圖、HyRead 或 台灣雲端書庫）
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  每張童書卡片下方均有<strong>垂直排列的兩個借閱按鈕</strong>（黃色國資圖、綠色HyRead），點選任一按鈕即可直接開啟借閱頁面。
+                  每張童書卡片下方均有<strong>垂直排列的借閱按鈕</strong>（黃色國資圖、綠色HyRead、紫色台灣雲端書庫），點選任一按鈕即可直接開啟借閱頁面。
                 </p>
               </div>
             </div>

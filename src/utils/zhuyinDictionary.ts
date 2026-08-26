@@ -541,6 +541,13 @@ const RAW_ZHUYIN_PAIRS: [string, string][] = [
   ['。', '。'],
   ['3', '3'],
   ['5', '5'],
+  ['吵', 'ㄔㄠˇ'],
+  ['架', 'ㄐㄧㄚˋ'],
+  ['蛇', 'ㄕㄜˊ'],
+  ['娶', 'ㄑㄩˇ'],
+  ['娘', 'ㄋㄧㄤˊ'],
+  ['捉', 'ㄓㄨㄛ'],
+  ['弄', 'ㄋㄨㄥˋ'],
 ];
 
 export const ZHUYIN_DICT: Record<string, string> = {};

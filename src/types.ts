@@ -22,6 +22,7 @@ export interface Book {
   bookMainUrl: string; // Default loan URL (NLPI or primary)
   nlpiUrl?: string; // 國立公共資訊圖書館 (NLPI) direct loan URL
   hyreadUrl?: string; // 高市圖 / 喜閱網 HyRead direct loan URL
+  cloudUrl?: string; // 台灣雲端書庫@高雄市 (ebookservice.tw) direct loan URL
   bookImgUrl: string;
   introduce: string;
   author?: string;
@@ -42,3 +43,5 @@ export interface UserBookState {
 export type ZhuyinDisplayMode = 'side' | 'top' | 'hidden';
 
 export type TextSize = 'normal' | 'large' | 'xlarge';
+
+export type LibraryFilter = 'all' | 'nlpi' | 'hyread' | 'cloud';

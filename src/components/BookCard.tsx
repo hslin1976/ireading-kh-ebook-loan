@@ -17,6 +17,7 @@ import {
   Star,
   Info,
   Sparkles,
+  Cloud,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -99,6 +100,13 @@ export const BookCard: React.FC<BookCardProps> = ({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const handleCloudLoanClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (book.cloudUrl) {
+      window.open(book.cloudUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <div
       id={`book-card-${book.isbn}`}
@@ -159,13 +167,13 @@ export const BookCard: React.FC<BookCardProps> = ({
         )}
 
         {/* Quick Loan Hover/Touch Overlay */}
-        {(book.nlpiUrl || book.hyreadUrl) && (
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 gap-1.5">
+        {(book.nlpiUrl || book.hyreadUrl || book.cloudUrl) && (
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2.5 gap-1.5 z-10">
             {book.nlpiUrl && (
               <button
                 type="button"
                 onClick={handleNlpiLoanClick}
-                className="w-full bg-amber-400 hover:bg-amber-500 active:scale-95 text-slate-950 font-bold py-1.5 px-2.5 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
+                className="w-full bg-amber-400 hover:bg-amber-500 active:scale-95 text-slate-950 font-bold py-1.5 px-2 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>國資圖借閱</span>
@@ -176,10 +184,21 @@ export const BookCard: React.FC<BookCardProps> = ({
               <button
                 type="button"
                 onClick={handleHyreadLoanClick}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-1.5 px-2.5 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-1.5 px-2 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>HyRead 借閱</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+            )}
+            {book.cloudUrl && (
+              <button
+                type="button"
+                onClick={handleCloudLoanClick}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-1.5 px-2 rounded-lg shadow flex items-center justify-center gap-1.5 text-xs transition-all"
+              >
+                <Cloud className="w-3.5 h-3.5" />
+                <span>台灣雲端書庫 (高市圖)</span>
                 <ExternalLink className="w-3 h-3" />
               </button>
             )}
@@ -310,7 +329,7 @@ export const BookCard: React.FC<BookCardProps> = ({
           </div>
 
           {/* Vertically Aligned Loan Buttons */}
-          {(book.nlpiUrl || book.hyreadUrl) && (
+          {(book.nlpiUrl || book.hyreadUrl || book.cloudUrl) && (
             <div className="flex flex-col gap-1.5 pt-1">
               {/* 1. NLPI Loan Button (Only if available) */}
               {book.nlpiUrl && (
@@ -341,6 +360,22 @@ export const BookCard: React.FC<BookCardProps> = ({
                     <span>HyRead (高市圖) 借閱</span>
                   </span>
                   <ExternalLink className="w-3 h-3 text-emerald-100" />
+                </button>
+              )}
+
+              {/* 3. Taiwan Cloud Library @ Kaohsiung (Only if available) */}
+              {book.cloudUrl && (
+                <button
+                  type="button"
+                  id={`loan-cloud-btn-${book.isbn}`}
+                  onClick={handleCloudLoanClick}
+                  className="w-full py-2 px-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 active:scale-[0.98] text-white font-bold rounded-xl shadow-sm border border-indigo-500 flex items-center justify-between text-xs transition-all"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Cloud className="w-3.5 h-3.5 text-indigo-200" />
+                    <span>台灣雲端書庫@高雄 借閱</span>
+                  </span>
+                  <ExternalLink className="w-3 h-3 text-indigo-200" />
                 </button>
               )}
             </div>

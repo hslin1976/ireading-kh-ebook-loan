@@ -74,7 +74,7 @@ export const KidsHeader: React.FC<KidsHeaderProps> = ({
               <span>•</span>
               <span>分級閱讀</span>
               <span>•</span>
-              <span>國資圖電子書借閱</span>
+              <span>國資圖 / 高市圖 / 雲端書庫</span>
             </p>
           </div>
         </div>
