@@ -267,62 +267,74 @@ export const GoogleRatingSection: React.FC<GoogleRatingSectionProps> = ({
             <MessageSquare className="w-3.5 h-3.5 text-amber-600" />
             <span>精選真實讀者評論與借閱回饋</span>
           </span>
-          <span className="text-[11px] text-slate-400 font-normal">依關聯性排序</span>
+          <span className="text-[11px] text-slate-400 font-normal">
+            {stats.recentReviews.length > 0 ? '依關聯性排序' : '尚無評論'}
+          </span>
         </div>
 
-        <div className="space-y-2.5">
-          {stats.recentReviews.map((rev) => {
-            const isLiked = likedReviews[rev.id];
-            return (
-              <div
-                key={rev.id}
-                className="p-3 bg-slate-50/80 rounded-xl border border-slate-100 space-y-1.5 text-xs"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-amber-200 text-amber-900 font-bold flex items-center justify-center text-[10px]">
-                      {rev.author.charAt(0)}
+        {stats.recentReviews.length === 0 ? (
+          <div className="text-center py-6 px-4 bg-slate-50/80 rounded-xl border border-dashed border-slate-200 text-slate-500 space-y-1">
+            <MessageSquare className="w-6 h-6 mx-auto text-slate-300 mb-1" />
+            <div className="text-xs font-bold text-slate-600">目前尚無讀者評分與評論紀錄</div>
+            <div className="text-[11px] text-slate-400">
+              讀完這本書後，歡迎在上方點擊「撰寫評論與評分」留下第一則心得！
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-2.5">
+            {stats.recentReviews.map((rev) => {
+              const isLiked = likedReviews[rev.id];
+              return (
+                <div
+                  key={rev.id}
+                  className="p-3 bg-slate-50/80 rounded-xl border border-slate-100 space-y-1.5 text-xs"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-amber-200 text-amber-900 font-bold flex items-center justify-center text-[10px]">
+                        {rev.author.charAt(0)}
+                      </div>
+                      <div>
+                        <span className="font-bold text-slate-800">{rev.author}</span>
+                        <span className="text-[10px] text-slate-500 ml-1.5 px-1.5 py-0.2 bg-white rounded border border-slate-200">
+                          {rev.role}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-bold text-slate-800">{rev.author}</span>
-                      <span className="text-[10px] text-slate-500 ml-1.5 px-1.5 py-0.2 bg-white rounded border border-slate-200">
-                        {rev.role}
-                      </span>
-                    </div>
+                    <span className="text-[10px] text-slate-400">{rev.date}</span>
                   </div>
-                  <span className="text-[10px] text-slate-400">{rev.date}</span>
-                </div>
 
-                {/* Stars */}
-                <div className="flex items-center gap-1 text-amber-500">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      className={`w-3 h-3 ${s <= rev.rating ? 'fill-amber-400 text-amber-500' : 'text-slate-200'}`}
-                    />
-                  ))}
-                </div>
+                  {/* Stars */}
+                  <div className="flex items-center gap-1 text-amber-500">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star
+                        key={s}
+                        className={`w-3 h-3 ${s <= rev.rating ? 'fill-amber-400 text-amber-500' : 'text-slate-200'}`}
+                      />
+                    ))}
+                  </div>
 
-                {/* Review Content */}
-                <p className="text-slate-700 leading-relaxed">{rev.content}</p>
+                  {/* Review Content */}
+                  <p className="text-slate-700 leading-relaxed">{rev.content}</p>
 
-                {/* Thumbs up count */}
-                <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
-                  <button
-                    type="button"
-                    onClick={() => toggleLike(rev.id)}
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors ${
-                      isLiked ? 'bg-amber-100 text-amber-900 font-bold' : 'hover:bg-slate-200/60'
-                    }`}
-                  >
-                    <ThumbsUp className="w-3 h-3" />
-                    <span>有用 ({rev.likes + (isLiked ? 1 : 0)})</span>
-                  </button>
+                  {/* Thumbs up count */}
+                  <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleLike(rev.id)}
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors ${
+                        isLiked ? 'bg-amber-100 text-amber-900 font-bold' : 'hover:bg-slate-200/60'
+                      }`}
+                    >
+                      <ThumbsUp className="w-3 h-3" />
+                      <span>有用 ({rev.likes + (isLiked ? 1 : 0)})</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

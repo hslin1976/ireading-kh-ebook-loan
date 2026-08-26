@@ -88,8 +88,9 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   const handleNlpiLoanClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = book.nlpiUrl || book.bookMainUrl;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    if (book.nlpiUrl) {
+      window.open(book.nlpiUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const handleHyreadLoanClick = (e: React.MouseEvent) => {

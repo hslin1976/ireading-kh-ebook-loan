@@ -28,100 +28,33 @@ export interface BookRatingStats {
 // Client-side in-memory cache
 const memoryRatingCache: Record<string, BookRatingStats> = {};
 
-// Generate deterministic baseline rating from ISBN
+// Generate baseline rating starting at zero rating history
 export function generateBaselineRating(isbn: string, title: string = '', level: number = 1): BookRatingStats {
-  let hash = 0;
-  for (let i = 0; i < isbn.length; i++) {
-    hash = (hash * 31 + isbn.charCodeAt(i)) % 100000;
-  }
+  const libraryCategory = '喜閱網推薦童書';
+  const badge = '喜閱網指定書';
 
-  // Base score between 4.7 and 5.0
-  const scoreRaw = 4.7 + ((hash % 30) / 100);
-  const score = Math.min(5.0, Math.round(scoreRaw * 10) / 10);
-
-  // Review counts from 260 to 1,850
-  const reviewCount = 260 + (hash % 1590);
-
-  // Distribution weights
-  const dist5 = 82 + (hash % 14); // 82% - 95%
-  const dist4 = Math.min(100 - dist5, 3 + ((hash >> 2) % 10));
-  const dist3 = Math.min(100 - dist5 - dist4, 1 + ((hash >> 3) % 4));
-  const dist2 = Math.min(100 - dist5 - dist4 - dist3, (hash % 2));
-  const dist1 = Math.max(0, 100 - dist5 - dist4 - dist3 - dist2);
-
-  const categories = [
-    '高市圖熱門借閱 TOP 5',
-    '喜閱網年度精選',
-    '國資圖熱門借閱',
-    '國小低年級推薦',
-    '親子共讀五星推薦',
-    '高雄市閱讀起步走推薦',
-  ];
-  const libraryCategory = categories[hash % categories.length];
-
-  const badges = ['喜閱網指定書', '繪本大獎推薦', '暢銷童書', '教育部推薦好書', '圖書館借閱冠軍'];
-  const badge = badges[(hash >> 1) % badges.length];
-
-  const highlightsPool = [
-    '注音清晰好讀 (98%)',
-    '插圖生動溫馨 (96%)',
-    '故事富有想像力 (95%)',
-    '適合初學閱讀 (99%)',
-    '親子共讀首選 (94%)',
-    '文字淺顯易懂 (97%)',
-  ];
   const highlights = [
-    highlightsPool[hash % highlightsPool.length],
-    highlightsPool[(hash + 2) % highlightsPool.length],
-    highlightsPool[(hash + 4) % highlightsPool.length],
-  ];
-
-  const sampleReviews = [
-    {
-      id: `rev-1-${isbn}`,
-      author: '林小宇',
-      role: '一年級小讀者' as const,
-      rating: 5,
-      date: '2 天前',
-      content: '我自己看著注音全部讀完了！圖畫很可愛，故事很好笑又好玩。',
-      likes: 18,
-    },
-    {
-      id: `rev-2-${isbn}`,
-      author: '陳老師',
-      role: '國小教師' as const,
-      rating: 5,
-      date: '1 週前',
-      content: '非常推薦作為班級晨讀與喜閱網認證共讀書，小朋友閱讀理解反響非常好。',
-      likes: 34,
-    },
-    {
-      id: `rev-3-${isbn}`,
-      author: '雅婷媽媽',
-      role: '親子伴讀家長' as const,
-      rating: 5,
-      date: '2 週前',
-      content: '線上電子書隨借隨看很方便，孩子每晚睡前都會自己拿平板聽語音一起跟讀！',
-      likes: 22,
-    },
+    '全彩大字版',
+    '注音清晰好讀',
+    '適合自主閱讀',
   ];
 
   return {
     isbn,
-    score,
-    reviewCount,
-    recommendRate: 95 + (hash % 5),
+    score: 0,
+    reviewCount: 0,
+    recommendRate: 0,
     libraryCategory,
     badge,
     distribution: {
-      5: dist5,
-      4: dist4,
-      3: dist3,
-      2: dist2,
-      1: dist1,
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
     },
     highlights,
-    recentReviews: sampleReviews,
+    recentReviews: [],
   };
 }
 
@@ -136,11 +69,22 @@ export function getLiveBookRatingStats(
 ): BookRatingStats {
   if (memoryRatingCache[isbn]) {
     const cached = memoryRatingCache[isbn];
-    if (userRating > 0 && userRating !== cached.score) {
-      return {
+    if (userRating > 0 && userRating !== cached.score && cached.reviewCount === 0) {
+      const singleRatingStats: BookRatingStats = {
         ...cached,
-        recentReviews: cached.recentReviews,
+        score: userRating,
+        reviewCount: 1,
+        recommendRate: userRating >= 4 ? 100 : 0,
+        distribution: {
+          5: userRating === 5 ? 100 : 0,
+          4: userRating === 4 ? 100 : 0,
+          3: userRating === 3 ? 100 : 0,
+          2: userRating === 2 ? 100 : 0,
+          1: userRating === 1 ? 100 : 0,
+        },
       };
+      memoryRatingCache[isbn] = singleRatingStats;
+      return singleRatingStats;
     }
     return cached;
   }
@@ -152,24 +96,46 @@ export function getLiveBookRatingStats(
     const customData = raw ? JSON.parse(raw) : {};
     const bookCustom = customData[isbn];
 
-    if (userRating > 0 || bookCustom) {
-      const addedRating = userRating || (bookCustom?.rating || 0);
-      const customReviews = bookCustom?.reviews || [];
+    const customReviews = bookCustom?.reviews || [];
+    const storedRating = bookCustom?.rating || 0;
+    const effectiveRating = userRating > 0 ? userRating : storedRating;
 
-      // Calculate blended score
-      const totalRatingsCount = base.reviewCount + (addedRating > 0 ? 1 : 0) + customReviews.length;
-      const totalPoints =
-        base.score * base.reviewCount +
-        addedRating +
-        customReviews.reduce((sum: number, r: any) => sum + r.rating, 0);
+    // Collect all ratings
+    const allRatingValues: number[] = customReviews.map((r: any) => r.rating);
+    if (effectiveRating > 0 && (customReviews.length === 0 || !customReviews.some((r: any) => r.rating === effectiveRating))) {
+      allRatingValues.push(effectiveRating);
+    }
+
+    if (allRatingValues.length > 0) {
+      const totalRatingsCount = allRatingValues.length;
+      const totalPoints = allRatingValues.reduce((sum, r) => sum + r, 0);
       const newScore = Math.min(5.0, Math.round((totalPoints / totalRatingsCount) * 10) / 10);
 
-      const allReviews = [...(bookCustom?.reviews || []), ...base.recentReviews];
+      const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+      allRatingValues.forEach((val) => {
+        const key = Math.min(5, Math.max(1, Math.round(val))) as 1 | 2 | 3 | 4 | 5;
+        counts[key] += 1;
+      });
+
+      const dist = {
+        5: Math.round((counts[5] / totalRatingsCount) * 100),
+        4: Math.round((counts[4] / totalRatingsCount) * 100),
+        3: Math.round((counts[3] / totalRatingsCount) * 100),
+        2: Math.round((counts[2] / totalRatingsCount) * 100),
+        1: Math.round((counts[1] / totalRatingsCount) * 100),
+      };
+
+      const highRatings = counts[4] + counts[5];
+      const recommendRate = Math.round((highRatings / totalRatingsCount) * 100);
+
+      const allReviews = [...(bookCustom?.reviews || [])];
 
       const blended: BookRatingStats = {
         ...base,
         score: newScore,
         reviewCount: totalRatingsCount,
+        recommendRate,
+        distribution: dist,
         recentReviews: allReviews,
       };
       memoryRatingCache[isbn] = blended;

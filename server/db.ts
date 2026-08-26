@@ -134,104 +134,31 @@ function triggerSave() {
   flushDatabaseAsync();
 }
 
-// Deterministic baseline calculation for books without user reviews yet
+// Deterministic baseline calculation for books without user reviews yet (Starts at zero rating history)
 export function generateInitialBookStats(isbn: string, title?: string, level?: number): BookRatingRecord {
-  let hash = 0;
-  for (let i = 0; i < isbn.length; i++) {
-    hash = (hash * 31 + isbn.charCodeAt(i)) % 100000;
-  }
+  const libraryCategory = '喜閱網推薦童書';
+  const badge = '喜閱網指定書';
 
-  const scoreRaw = 4.7 + ((hash % 30) / 100);
-  const score = Math.min(5.0, Math.round(scoreRaw * 10) / 10);
-  const reviewCount = 260 + (hash % 1590);
-
-  const count5 = Math.round(reviewCount * (0.84 + (hash % 10) / 100));
-  const count4 = Math.round(reviewCount * (0.08 + ((hash >> 2) % 6) / 100));
-  const count3 = Math.round(reviewCount * (0.03 + ((hash >> 3) % 4) / 100));
-  const count2 = Math.round(reviewCount * 0.01);
-  const count1 = Math.max(0, reviewCount - count5 - count4 - count3 - count2);
-
-  const total = count5 + count4 + count3 + count2 + count1 || 1;
-  const dist5 = Math.round((count5 / total) * 100);
-  const dist4 = Math.round((count4 / total) * 100);
-  const dist3 = Math.round((count3 / total) * 100);
-  const dist2 = Math.round((count2 / total) * 100);
-  const dist1 = Math.max(0, 100 - dist5 - dist4 - dist3 - dist2);
-
-  const categories = [
-    '高市圖熱門借閱 TOP 5',
-    '喜閱網年度精選',
-    '國資圖熱門借閱',
-    '國小低年級推薦',
-    '親子共讀五星推薦',
-    '高雄市閱讀起步走推薦',
-  ];
-  const libraryCategory = categories[hash % categories.length];
-
-  const badges = ['喜閱網指定書', '繪本大獎推薦', '暢銷童書', '教育部推薦好書', '圖書館借閱冠軍'];
-  const badge = badges[(hash >> 1) % badges.length];
-
-  const highlightsPool = [
-    '注音清晰好讀 (98%)',
-    '插圖生動溫馨 (96%)',
-    '故事富有想像力 (95%)',
-    '適合初學閱讀 (99%)',
-    '親子共讀首選 (94%)',
-    '文字淺顯易懂 (97%)',
-  ];
   const highlights = [
-    highlightsPool[hash % highlightsPool.length],
-    highlightsPool[(hash + 2) % highlightsPool.length],
-    highlightsPool[(hash + 4) % highlightsPool.length],
-  ];
-
-  const sampleReviews: ReviewItem[] = [
-    {
-      id: `seed-1-${isbn}`,
-      author: '林小宇',
-      role: '一年級小讀者',
-      rating: 5,
-      date: '2 天前',
-      content: '我自己看著注音全部讀完了！圖畫很可愛，故事很好笑又好玩。',
-      likes: 18,
-      createdAt: Date.now() - 2 * 86400000,
-    },
-    {
-      id: `seed-2-${isbn}`,
-      author: '陳老師',
-      role: '國小教師',
-      rating: 5,
-      date: '1 週前',
-      content: '非常推薦作為班級晨讀與喜閱網認證共讀書，小朋友閱讀理解反響非常好。',
-      likes: 34,
-      createdAt: Date.now() - 7 * 86400000,
-    },
-    {
-      id: `seed-3-${isbn}`,
-      author: '雅婷媽媽',
-      role: '親子伴讀家長',
-      rating: 5,
-      date: '2 週前',
-      content: '線上電子書隨借隨看很方便，孩子每晚睡前都會自己拿平板聽語音一起跟讀！',
-      likes: 22,
-      createdAt: Date.now() - 14 * 86400000,
-    },
+    '全彩大字版',
+    '注音清晰好讀',
+    '適合自主閱讀',
   ];
 
   return {
     isbn,
     title,
     level,
-    score,
-    reviewCount,
-    totalStars: Math.round(score * reviewCount),
-    recommendRate: 95 + (hash % 5),
+    score: 0,
+    reviewCount: 0,
+    totalStars: 0,
+    recommendRate: 0,
     libraryCategory,
     badge,
-    distribution: { 5: dist5, 4: dist4, 3: dist3, 2: dist2, 1: dist1 },
-    distributionCounts: { 5: count5, 4: count4, 3: count3, 2: count2, 1: count1 },
+    distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+    distributionCounts: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
     highlights,
-    reviews: sampleReviews,
+    reviews: [],
     updatedAt: Date.now(),
   };
 }
