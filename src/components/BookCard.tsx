@@ -281,7 +281,7 @@ export const BookCard: React.FC<BookCardProps> = ({
           </p>
         </div>
 
-        {/* Action Controls: Status Switcher & Vertically Aligned Loan Buttons */}
+        {/* Action Controls: Status Switcher, Loan Buttons & Bottom Rating Bar */}
         <div className="pt-2 border-t border-amber-100/80 space-y-2">
           {/* Read Status Switcher Pills */}
           <div className="flex items-center justify-between bg-slate-100/90 p-1 rounded-xl gap-1">

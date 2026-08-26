@@ -317,16 +317,6 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                 </div>
               </div>
 
-              {/* Google Maps Style Detailed Ratings & Real Breakdown */}
-              <GoogleRatingSection
-                stats={ratingStats}
-                isbn={book.isbn}
-                bookTitle={book.title}
-                userRating={userRating}
-                onUpdateRating={onUpdateRating}
-                onRefreshStats={() => setRefreshKey((k) => k + 1)}
-              />
-
               {/* Tags Cloud */}
               {book.tags && (
                 <div className="flex flex-wrap gap-1.5">
@@ -456,6 +446,16 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Google Maps Style Detailed Ratings & Real Breakdown (At the Bottom) */}
+              <GoogleRatingSection
+                stats={ratingStats}
+                isbn={book.isbn}
+                bookTitle={book.title}
+                userRating={userRating}
+                onUpdateRating={onUpdateRating}
+                onRefreshStats={() => setRefreshKey((k) => k + 1)}
+              />
             </div>
           </div>
         </div>
