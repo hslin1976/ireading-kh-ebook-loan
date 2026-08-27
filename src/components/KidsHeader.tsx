@@ -10,6 +10,8 @@ import {
   Eye,
   Star,
   Award,
+  ScanBarcode,
+  X,
 } from 'lucide-react';
 import { speakTaiwanMandarin } from '../utils/speechUtils';
 
@@ -24,6 +26,7 @@ interface KidsHeaderProps {
   totalBooksCount: number;
   onOpenGuide: () => void;
   onOpenStats: () => void;
+  onOpenScanner: () => void;
 }
 
 export const KidsHeader: React.FC<KidsHeaderProps> = ({
@@ -37,6 +40,7 @@ export const KidsHeader: React.FC<KidsHeaderProps> = ({
   totalBooksCount,
   onOpenGuide,
   onOpenStats,
+  onOpenScanner,
 }) => {
   const handleWelcomeSpeech = () => {
     speakTaiwanMandarin(
@@ -119,18 +123,37 @@ export const KidsHeader: React.FC<KidsHeaderProps> = ({
             id="search-input"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="搜尋書名、作者、關鍵字（例如：恐龍、賴馬、短耳兔）..."
-            className="w-full bg-white/95 pl-10 pr-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-slate-900 placeholder:text-slate-400 border-2 border-white focus:border-amber-600 focus:outline-none shadow-sm"
+            placeholder="搜尋書名、作者、ISBN 或點右側條碼掃描..."
+            className={`w-full bg-white/95 pl-10 ${
+              searchQuery ? 'pr-20' : 'pr-12'
+            } py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-slate-900 placeholder:text-slate-400 border-2 border-white focus:border-amber-600 focus:outline-none shadow-sm transition-all`}
           />
-          {searchQuery && (
+
+          {/* Right Embedded Action Buttons */}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {searchQuery && (
+              <button
+                type="button"
+                id="clear-search-btn"
+                onClick={() => onSearchChange('')}
+                className="bg-transparent hover:bg-slate-200/80 text-slate-500 hover:text-slate-800 p-1 rounded-full font-bold transition-colors"
+                title="清除搜尋"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {/* Embedded Transparent Barcode Scanner Button */}
             <button
               type="button"
-              onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full font-bold"
+              id="barcode-scan-btn"
+              onClick={onOpenScanner}
+              className="bg-transparent hover:bg-amber-100/70 text-slate-600 hover:text-amber-800 active:scale-90 p-1.5 rounded-xl transition-all flex items-center justify-center group"
+              title="掃描童書條碼 (ISBN / QR Code)"
             >
-              清除
+              <ScanBarcode className="w-5 h-5 text-slate-600 group-hover:text-amber-700 transition-colors" />
             </button>
-          )}
+          </div>
         </div>
 
         {/* Zhuyin & Font Control Toggles */}

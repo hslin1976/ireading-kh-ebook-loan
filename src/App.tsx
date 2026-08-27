@@ -15,6 +15,7 @@ import { BookCard } from './components/BookCard';
 import { BookDetailModal } from './components/BookDetailModal';
 import { LoanGuideModal } from './components/LoanGuideModal';
 import { KidsReadingStats } from './components/KidsReadingStats';
+import { BarcodeScannerModal } from './components/BarcodeScannerModal';
 import { VisitorCounter } from './components/VisitorCounter';
 import { ZhuyinText } from './components/ZhuyinText';
 import {
@@ -89,6 +90,7 @@ export default function App() {
   const [activeBookModal, setActiveBookModal] = useState<Book | null>(null);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [globalRefreshKey, setGlobalRefreshKey] = useState(0);
 
   // Save user reading state
@@ -271,6 +273,7 @@ export default function App() {
           totalBooksCount={BOOKS_DATA.length}
           onOpenGuide={() => setIsGuideOpen(true)}
           onOpenStats={() => setIsStatsOpen(true)}
+          onOpenScanner={() => setIsScannerOpen(true)}
         />
 
         {/* Level, Library and Read Status Filter Bar */}
@@ -504,6 +507,25 @@ export default function App() {
             return next;
           });
           setGlobalRefreshKey((k) => k + 1);
+        }}
+      />
+
+      {/* Barcode Scanner Modal */}
+      <BarcodeScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        onScanResult={(scannedBarcode) => {
+          // Set search query to scanned barcode or ISBN
+          setSearchQuery(scannedBarcode);
+          // Find matching book in collection
+          const found = BOOKS_DATA.find(
+            (b) =>
+              b.isbn === scannedBarcode ||
+              b.isbn.replace(/-/g, '') === scannedBarcode.replace(/-/g, '')
+          );
+          if (found) {
+            setActiveBookModal(found);
+          }
         }}
       />
     </div>
