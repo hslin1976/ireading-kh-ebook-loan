@@ -202,6 +202,18 @@ export default function App() {
   // Filtered Books
   const filteredBooks = useMemo(() => {
     return BOOKS_DATA.filter((book) => {
+      const rawQ = searchQuery.trim().toLowerCase();
+      const cleanQ = rawQ.replace(/[-\s]/g, '');
+      const isIsbnSearch =
+        cleanQ.length >= 6 && (/^\d+X?$/i.test(cleanQ) || cleanQ.startsWith('978'));
+
+      // If user is searching specifically by ISBN or Barcode number, prioritize matching across all books
+      if (isIsbnSearch) {
+        const rawIsbn = (book.isbn || '').toLowerCase();
+        const cleanIsbn = rawIsbn.replace(/[-\s]/g, '');
+        return rawIsbn.includes(rawQ) || cleanIsbn.includes(cleanQ);
+      }
+
       // 1. Level Filter
       if (selectedLevel !== 'all' && book.readLevel !== selectedLevel) {
         return false;
@@ -228,17 +240,27 @@ export default function App() {
 
       // 4. Search Query
       if (searchQuery.trim()) {
-        const q = searchQuery.trim().toLowerCase();
-        const titleMatch = book.title.toLowerCase().includes(q);
-        const introMatch = book.introduce.toLowerCase().includes(q);
-        const authorMatch = book.author?.toLowerCase().includes(q) || false;
-        const colorMatch = book.colorDot.toLowerCase().includes(q);
-        const tagsMatch = book.tags?.some((t) => t.toLowerCase().includes(q)) || false;
+        const rawQ = searchQuery.trim().toLowerCase();
+        const cleanQ = rawQ.replace(/[-\s]/g, '');
+
+        const titleMatch = book.title.toLowerCase().includes(rawQ);
+        const introMatch = book.introduce.toLowerCase().includes(rawQ);
+        const authorMatch = book.author?.toLowerCase().includes(rawQ) || false;
+        const colorMatch = book.colorDot.toLowerCase().includes(rawQ);
+        const tagsMatch = book.tags?.some((t) => t.toLowerCase().includes(rawQ)) || false;
+
+        // ISBN match (supporting exact or partial ISBN with/without hyphens)
+        const rawIsbn = (book.isbn || '').toLowerCase();
+        const cleanIsbn = rawIsbn.replace(/[-\s]/g, '');
+        const isbnMatch =
+          rawIsbn.includes(rawQ) ||
+          cleanIsbn.includes(cleanQ) ||
+          (cleanQ.length >= 3 && cleanIsbn.includes(cleanQ));
 
         // Zhuyin match
-        const zhuyinMatch = book.titleZhuyin.some((z) => z.zhuyin?.includes(q));
+        const zhuyinMatch = book.titleZhuyin.some((z) => z.zhuyin?.includes(rawQ));
 
-        if (!titleMatch && !introMatch && !authorMatch && !colorMatch && !tagsMatch && !zhuyinMatch) {
+        if (!titleMatch && !introMatch && !authorMatch && !colorMatch && !tagsMatch && !zhuyinMatch && !isbnMatch) {
           return false;
         }
       }
@@ -517,11 +539,15 @@ export default function App() {
         onScanResult={(scannedBarcode) => {
           // Set search query to scanned barcode or ISBN
           setSearchQuery(scannedBarcode);
+          // Reset other filters so the book is not filtered out
+          setSelectedLevel('all');
+          setSelectedLibrary('all');
+          setSelectedStatus('all');
           // Find matching book in collection
           const found = BOOKS_DATA.find(
             (b) =>
               b.isbn === scannedBarcode ||
-              b.isbn.replace(/-/g, '') === scannedBarcode.replace(/-/g, '')
+              b.isbn.replace(/[-\s]/g, '') === scannedBarcode.replace(/[-\s]/g, '')
           );
           if (found) {
             setActiveBookModal(found);

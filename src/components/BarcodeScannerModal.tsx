@@ -68,8 +68,11 @@ export const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
     playBeep();
 
     // Check if matching catalog ISBN or title
+    const cleanDigits = cleanText.replace(/[-\s]/g, '');
     const foundBook = BOOKS_DATA.find(
-      (b) => b.isbn === cleanText || b.isbn.replace(/-/g, '') === cleanText.replace(/-/g, '')
+      (b) =>
+        b.isbn === cleanText ||
+        b.isbn.replace(/[-\s]/g, '') === cleanDigits
     );
 
     if (foundBook) {
@@ -278,6 +281,7 @@ export const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
 
   // Sample ISBNs for fast kid demonstration
   const sampleBooks = [
+    { isbn: '9786263056732', title: '短耳兔3：冬冬的考卷不見了' },
     { isbn: '9789864793648', title: '會生氣的山' },
     { isbn: '9789579095808', title: '陶樂蒂的開學日' },
     { isbn: '9789863712190', title: '我和同學吵架了' },

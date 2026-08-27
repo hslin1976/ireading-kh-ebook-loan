@@ -432,7 +432,7 @@ export const BOOKS_DATA: Book[] = [
     pageCount: 40,
   },
   {
-    isbn: '957642156X',
+    isbn: '9789576421563',
     title: '紅公雞',
     titleZhuyin: stringToZhuyinChars('紅公雞'),
     colorDot: '紅標',
