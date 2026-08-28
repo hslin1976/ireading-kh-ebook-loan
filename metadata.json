@@ -1,6 +1,6 @@
 {
   "name": "童書借閱樂園 (Kids Ebook Loan)",
-  "description": "專為台灣7歲小讀者設計的注音電子書借閱圖書館，提供分級閱讀、注音符號標音、閱讀狀態管理與平板友善借閱體驗。",
+  "description": "專為台灣7歲及學童設計的注音電子書與有聲童書借閱圖書館，結合高雄喜閱網1~12級分級檢定書單與精選推薦書單，提供注音標音、多格式篩選、閱讀狀態管理與各大圖書館線上即時借閱。",
   "requestFramePermissions": ["camera"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

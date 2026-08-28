@@ -7,8 +7,16 @@ import {
   ZhuyinDisplayMode,
   TextSize,
   LibraryFilter,
+  MediaTypeFilter,
+  BookListSource,
 } from './types';
-import { BOOKS_DATA, LEVEL_INFO } from './data/booksData';
+import {
+  BOOKS_DATA,
+  MY_BOOKS_DATA,
+  KH_READING_BOOKS,
+  ALL_BOOKS_DATA,
+  LEVEL_INFO,
+} from './data/booksData';
 import { KidsHeader } from './components/KidsHeader';
 import { LevelFilterBar } from './components/LevelFilterBar';
 import { BookCard } from './components/BookCard';
@@ -33,8 +41,23 @@ import { speakTaiwanMandarin } from './utils/speechUtils';
 
 const STORAGE_KEY = 'taiwan_kids_ebook_state_v1';
 const PREFS_KEY = 'taiwan_kids_ebook_prefs_v1';
+const SOURCE_KEY = 'taiwan_kids_ebook_sources_v1';
 
 export default function App() {
+  // Booklist Source Selection (Multiple selection, default to ['kh_reading'])
+  const [selectedSources, setSelectedSources] = useState<BookListSource[]>(() => {
+    try {
+      const saved = localStorage.getItem(SOURCE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {}
+    return ['kh_reading']; // Default enabled: 高雄喜閱網
+  });
+
   // User Reading States mapped by ISBN
   const [userBooks, setUserBooks] = useState<Record<string, UserBookState>>(() => {
     try {
@@ -45,9 +68,8 @@ export default function App() {
     } catch (e) {
       console.error('Failed to read local storage', e);
     }
-    // Default initial states: first 2 books as unread
     const initial: Record<string, UserBookState> = {};
-    BOOKS_DATA.forEach((b) => {
+    ALL_BOOKS_DATA.forEach((b) => {
       initial[b.isbn] = {
         status: 'unread',
         favorite: false,
@@ -81,6 +103,7 @@ export default function App() {
   });
 
   // Filter & Search states
+  const [selectedMediaType, setSelectedMediaType] = useState<MediaTypeFilter>('all');
   const [selectedLevel, setSelectedLevel] = useState<ReadLevel | 'all'>('all');
   const [selectedLibrary, setSelectedLibrary] = useState<LibraryFilter>('all');
   const [selectedStatus, setSelectedStatus] = useState<ReadStatus | 'all' | 'favorites'>('all');
@@ -92,6 +115,13 @@ export default function App() {
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [globalRefreshKey, setGlobalRefreshKey] = useState(0);
+
+  // Save selected sources
+  useEffect(() => {
+    try {
+      localStorage.setItem(SOURCE_KEY, JSON.stringify(selectedSources));
+    } catch (e) {}
+  }, [selectedSources]);
 
   // Save user reading state
   useEffect(() => {
@@ -108,6 +138,43 @@ export default function App() {
       localStorage.setItem(PREFS_KEY, JSON.stringify({ zhuyinMode, textSize }));
     } catch (e) {}
   }, [zhuyinMode, textSize]);
+
+  // Toggle Source handler (Multi-selection)
+  const handleToggleSource = (source: BookListSource) => {
+    setSelectedSources((prev) => {
+      if (prev.includes(source)) {
+        if (prev.length === 1) {
+          // If only 1 selected and clicked, switch to the other source
+          const other: BookListSource = source === 'kh_reading' ? 'my_books' : 'kh_reading';
+          return [other];
+        }
+        return prev.filter((s) => s !== source);
+      } else {
+        return [...prev, source];
+      }
+    });
+  };
+
+  // Base Books matching the active booklist sources
+  const activePoolBooks = useMemo(() => {
+    const list: Book[] = [];
+    if (selectedSources.includes('kh_reading')) {
+      list.push(...KH_READING_BOOKS);
+    }
+    if (selectedSources.includes('my_books')) {
+      list.push(...MY_BOOKS_DATA);
+    }
+    return list;
+  }, [selectedSources]);
+
+  // Source Counts for the top menu
+  const sourceCounts = useMemo(() => {
+    return {
+      kh_reading: KH_READING_BOOKS.length,
+      my_books: MY_BOOKS_DATA.length,
+      total: ALL_BOOKS_DATA.length,
+    };
+  }, []);
 
   // Update book status
   const handleUpdateStatus = (isbn: string, status: ReadStatus) => {
@@ -157,39 +224,67 @@ export default function App() {
     }));
   };
 
-  // Calculate Level, Library and Status Counts
-  const levelCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: BOOKS_DATA.length, '1': 0, '2': 0, '3': 0, '4': 0 };
-    BOOKS_DATA.forEach((b) => {
-      counts[String(b.readLevel)] = (counts[String(b.readLevel)] || 0) + 1;
+  // Calculate Media Type, Level, Library and Status Counts based on active pool
+  const mediaCounts = useMemo(() => {
+    const counts: Record<MediaTypeFilter, number> = {
+      all: activePoolBooks.length,
+      text: 0,
+      audio: 0,
+    };
+    activePoolBooks.forEach((b) => {
+      const mType = b.mediaType || 'text';
+      counts[mType] = (counts[mType] || 0) + 1;
     });
     return counts;
-  }, []);
+  }, [activePoolBooks]);
+
+  const levelCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      all: activePoolBooks.length,
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+      '6': 0,
+      '7': 0,
+      '8': 0,
+      '9': 0,
+      '10': 0,
+      '11': 0,
+      '12': 0,
+    };
+    activePoolBooks.forEach((b) => {
+      const k = String(b.readLevel);
+      counts[k] = (counts[k] || 0) + 1;
+    });
+    return counts;
+  }, [activePoolBooks]);
 
   const libraryCounts = useMemo(() => {
     const counts: Record<LibraryFilter, number> = {
-      all: BOOKS_DATA.length,
+      all: activePoolBooks.length,
       nlpi: 0,
       hyread: 0,
       cloud: 0,
     };
-    BOOKS_DATA.forEach((b) => {
+    activePoolBooks.forEach((b) => {
       if (b.nlpiUrl) counts.nlpi += 1;
       if (b.hyreadUrl) counts.hyread += 1;
       if (b.cloudUrl) counts.cloud += 1;
     });
     return counts;
-  }, []);
+  }, [activePoolBooks]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {
-      all: BOOKS_DATA.length,
+      all: activePoolBooks.length,
       unread: 0,
       reading: 0,
       completed: 0,
       favorites: 0,
     };
-    BOOKS_DATA.forEach((b) => {
+    activePoolBooks.forEach((b) => {
       const st = userBooks[b.isbn]?.status || 'unread';
       counts[st] = (counts[st] || 0) + 1;
       if (userBooks[b.isbn]?.favorite) {
@@ -197,24 +292,32 @@ export default function App() {
       }
     });
     return counts;
-  }, [userBooks]);
+  }, [activePoolBooks, userBooks]);
 
   // Filtered Books
   const filteredBooks = useMemo(() => {
-    return BOOKS_DATA.filter((book) => {
+    return activePoolBooks.filter((book) => {
       const rawQ = searchQuery.trim().toLowerCase();
       const cleanQ = rawQ.replace(/[-\s]/g, '');
       const isIsbnSearch =
         cleanQ.length >= 6 && (/^\d+X?$/i.test(cleanQ) || cleanQ.startsWith('978'));
 
-      // If user is searching specifically by ISBN or Barcode number, prioritize matching across all books
+      // If user is searching specifically by ISBN or Barcode number, prioritize matching
       if (isIsbnSearch) {
         const rawIsbn = (book.isbn || '').toLowerCase();
         const cleanIsbn = rawIsbn.replace(/[-\s]/g, '');
         return rawIsbn.includes(rawQ) || cleanIsbn.includes(cleanQ);
       }
 
-      // 1. Level Filter
+      // 0. Media Type Filter (All / Text / Audio)
+      if (selectedMediaType !== 'all') {
+        const bookType = book.mediaType || 'text';
+        if (bookType !== selectedMediaType) {
+          return false;
+        }
+      }
+
+      // 1. Level Filter (1 to 12)
       if (selectedLevel !== 'all' && book.readLevel !== selectedLevel) {
         return false;
       }
@@ -246,6 +349,9 @@ export default function App() {
         const titleMatch = book.title.toLowerCase().includes(rawQ);
         const introMatch = book.introduce.toLowerCase().includes(rawQ);
         const authorMatch = book.author?.toLowerCase().includes(rawQ) || false;
+        const publisherMatch = book.publisher?.toLowerCase().includes(rawQ) || false;
+        const bookNoMatch = book.bookNo?.toLowerCase().includes(rawQ) || false;
+        const yearMatch = book.year?.toLowerCase().includes(rawQ) || false;
         const colorMatch = book.colorDot.toLowerCase().includes(rawQ);
         const tagsMatch = book.tags?.some((t) => t.toLowerCase().includes(rawQ)) || false;
 
@@ -260,14 +366,33 @@ export default function App() {
         // Zhuyin match
         const zhuyinMatch = book.titleZhuyin.some((z) => z.zhuyin?.includes(rawQ));
 
-        if (!titleMatch && !introMatch && !authorMatch && !colorMatch && !tagsMatch && !zhuyinMatch && !isbnMatch) {
+        if (
+          !titleMatch &&
+          !introMatch &&
+          !authorMatch &&
+          !publisherMatch &&
+          !bookNoMatch &&
+          !yearMatch &&
+          !colorMatch &&
+          !tagsMatch &&
+          !zhuyinMatch &&
+          !isbnMatch
+        ) {
           return false;
         }
       }
 
       return true;
     });
-  }, [selectedLevel, selectedLibrary, selectedStatus, searchQuery, userBooks]);
+  }, [
+    activePoolBooks,
+    selectedMediaType,
+    selectedLevel,
+    selectedLibrary,
+    selectedStatus,
+    searchQuery,
+    userBooks,
+  ]);
 
   const completedTotal = statusCounts.completed || 0;
 
@@ -278,7 +403,7 @@ export default function App() {
         <span>🎒 台灣小學一年級・7歲注音電子書庫</span>
         <span className="hidden sm:inline">•</span>
         <span className="hidden sm:inline font-bold text-amber-950">
-          點擊封面直接借書 📖 國立公共資訊圖書館（NLPI）線上閱讀
+          結合高雄喜閱網分級推薦書單 (第1~12級) 📖 線上即時借閱
         </span>
       </div>
 
@@ -292,37 +417,35 @@ export default function App() {
           textSize={textSize}
           onTextSizeChange={setTextSize}
           completedCount={completedTotal}
-          totalBooksCount={BOOKS_DATA.length}
+          totalBooksCount={activePoolBooks.length}
           onOpenGuide={() => setIsGuideOpen(true)}
           onOpenStats={() => setIsStatsOpen(true)}
           onOpenScanner={() => setIsScannerOpen(true)}
         />
 
-        {/* Level, Library and Read Status Filter Bar */}
+        {/* Level, Booklist Source, Library and Read Status Filter Bar */}
         <LevelFilterBar
+          selectedSources={selectedSources}
+          selectedMediaType={selectedMediaType}
           selectedLevel={selectedLevel}
           selectedLibrary={selectedLibrary}
           selectedStatus={selectedStatus}
+          sourceCounts={sourceCounts}
+          mediaCounts={mediaCounts}
           levelCounts={levelCounts}
           libraryCounts={libraryCounts}
           statusCounts={statusCounts}
+          onToggleSource={handleToggleSource}
+          onSelectMediaType={setSelectedMediaType}
           onSelectLevel={setSelectedLevel}
           onSelectLibrary={setSelectedLibrary}
           onSelectStatus={setSelectedStatus}
         />
 
         {/* Active Level Description Banner if specific level selected */}
-        {selectedLevel !== 'all' && (
+        {selectedLevel !== 'all' && LEVEL_INFO[selectedLevel] && (
           <div
-            className={`p-4 rounded-2xl mb-6 border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-              selectedLevel === 1
-                ? 'bg-slate-100 border-slate-300'
-                : selectedLevel === 2
-                ? 'bg-slate-900 text-white border-slate-800'
-                : selectedLevel === 3
-                ? 'bg-rose-50 border-rose-200 text-rose-900'
-                : 'bg-amber-50 border-amber-200 text-amber-900'
-            }`}
+            className={`p-4 rounded-2xl mb-6 border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm ${LEVEL_INFO[selectedLevel].bgColor} ${LEVEL_INFO[selectedLevel].borderColor} ${LEVEL_INFO[selectedLevel].textColor}`}
           >
             <div className="flex items-center gap-3">
               <span
@@ -332,17 +455,17 @@ export default function App() {
               />
               <div>
                 <h3 className="font-extrabold text-sm sm:text-base">
-                  {LEVEL_INFO[selectedLevel].name}：{LEVEL_INFO[selectedLevel].desc}
+                  {LEVEL_INFO[selectedLevel].name}：{LEVEL_INFO[selectedLevel].description}
                 </h3>
-                <p className="text-xs opacity-80 mt-0.5">
-                  推薦對象：{LEVEL_INFO[selectedLevel].suitable}
+                <p className="text-xs opacity-90 mt-0.5 font-medium">
+                  🎯 適讀年齡：{LEVEL_INFO[selectedLevel].ageRange}
                 </p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setSelectedLevel('all')}
-              className="text-xs font-bold px-3 py-1.5 rounded-xl bg-white/80 hover:bg-white text-slate-800 self-start sm:self-auto shadow-sm"
+              className="text-xs font-bold px-3 py-1.5 rounded-xl bg-white text-slate-900 self-start sm:self-auto shadow-sm hover:bg-slate-100 transition-colors"
             >
               顯示全部級別
             </button>
@@ -356,6 +479,33 @@ export default function App() {
             <span>
               共有 <strong className="text-amber-600 text-base">{filteredBooks.length}</strong> 本好書
             </span>
+
+            {/* Booklist Source Indicator Pill */}
+            <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full text-xs font-bold">
+              {selectedSources.length === 2
+                ? '🏫 高雄喜閱網 + 📚 我的書單'
+                : selectedSources.includes('kh_reading')
+                ? '🏫 高雄喜閱網'
+                : '📚 我的書單'}
+            </span>
+
+            {selectedMediaType !== 'all' && (
+              <span
+                className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                  selectedMediaType === 'audio'
+                    ? 'bg-purple-200 text-purple-950 border border-purple-300'
+                    : 'bg-blue-200 text-blue-950 border border-blue-300'
+                }`}
+              >
+                {selectedMediaType === 'audio' ? '🎧 有聲童書' : '📖 電子童書'}
+              </span>
+            )}
+            {selectedLevel !== 'all' && LEVEL_INFO[selectedLevel] && (
+              <span className="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1">
+                <span className={`w-2 h-2 rounded-full ${LEVEL_INFO[selectedLevel].dotColor}`} />
+                <span>{LEVEL_INFO[selectedLevel].name}</span>
+              </span>
+            )}
             {selectedLibrary !== 'all' && (
               <span
                 className={`px-2 py-0.5 rounded-full text-xs font-bold ${
@@ -403,7 +553,10 @@ export default function App() {
 
         {/* Books Grid */}
         {filteredBooks.length > 0 ? (
-          <div key={globalRefreshKey} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div
+            key={globalRefreshKey}
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+          >
             {filteredBooks.map((book) => {
               const bookState = userBooks[book.isbn] || {
                 status: 'unread',
@@ -413,7 +566,7 @@ export default function App() {
 
               return (
                 <BookCard
-                  key={book.isbn}
+                  key={book.id || `${book.isbn}-${book.mediaType || 'text'}`}
                   book={book}
                   userStatus={bookState.status}
                   isFavorite={Boolean(bookState.favorite)}
@@ -433,11 +586,13 @@ export default function App() {
             <SearchX className="w-16 h-16 text-amber-400 mx-auto mb-3" />
             <h3 className="text-lg font-black text-slate-800 mb-1">找不到相關的童書呢！</h3>
             <p className="text-xs sm:text-sm text-slate-500 mb-4">
-              可以嘗試更換搜尋關鍵字，或是切換篩選條件看看其他精彩好書。
+              可以嘗試更換搜尋關鍵字，或是勾選喜閱網/我的書單來源。
             </p>
             <button
               type="button"
               onClick={() => {
+                setSelectedSources(['kh_reading']);
+                setSelectedMediaType('all');
                 setSelectedLevel('all');
                 setSelectedLibrary('all');
                 setSelectedStatus('all');
@@ -457,10 +612,10 @@ export default function App() {
             <span className="text-3xl">💡</span>
             <div>
               <h4 className="font-extrabold text-sm sm:text-base text-slate-900">
-                平板借書閱讀小撇步
+                高雄喜閱網與電子書借閱小撇步
               </h4>
               <p className="text-xs text-slate-600 mt-0.5">
-                點擊書本封面或「國資圖線上借書」按鈕，立即在瀏覽器中借閱全彩繪本！
+                點擊書本封面或借閱按鈕，可直接前往高雄市立圖書館、HyRead 與國資圖借閱全彩繪本！
               </p>
             </div>
           </div>
@@ -515,10 +670,9 @@ export default function App() {
       <KidsReadingStats
         isOpen={isStatsOpen}
         onClose={() => setIsStatsOpen(false)}
-        books={BOOKS_DATA}
+        books={activePoolBooks}
         userBooks={userBooks}
         onResetAllRatings={() => {
-          // Clear user rating stars on all books in state
           setUserBooks((prev) => {
             const next = { ...prev };
             for (const isbn of Object.keys(next)) {
@@ -540,16 +694,21 @@ export default function App() {
           // Set search query to scanned barcode or ISBN
           setSearchQuery(scannedBarcode);
           // Reset other filters so the book is not filtered out
+          setSelectedMediaType('all');
           setSelectedLevel('all');
           setSelectedLibrary('all');
           setSelectedStatus('all');
-          // Find matching book in collection
-          const found = BOOKS_DATA.find(
+          // Find matching book across all books
+          const found = ALL_BOOKS_DATA.find(
             (b) =>
               b.isbn === scannedBarcode ||
               b.isbn.replace(/[-\s]/g, '') === scannedBarcode.replace(/[-\s]/g, '')
           );
           if (found) {
+            // Auto-enable its source if not enabled
+            if (found.source && !selectedSources.includes(found.source)) {
+              setSelectedSources((prev) => [...prev, found.source as BookListSource]);
+            }
             setActiveBookModal(found);
           }
         }}

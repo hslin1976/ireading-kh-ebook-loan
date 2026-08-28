@@ -15,6 +15,7 @@ import {
   incrementVisitorHit,
   BookRatingRecord,
 } from './server/db.js';
+import { deepSearchAndParseIreading } from './server/ireadingParser.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -190,6 +191,34 @@ app.post('/api/ratings/:isbn/like', (req, res) => {
   }
   const result = likeBookReview(isbn, reviewId);
   res.json(result);
+});
+
+// Official 喜閱網 Deep Search & HTML DOM Parser Endpoint
+app.post('/api/ireading/deep-parse', async (req: Request, res: Response) => {
+  try {
+    const { title, bookNo, isbn, colorDot, year } = req.body || {};
+    if (!title && !bookNo && !isbn) {
+      res.status(400).json({ error: 'Book title, bookNo, or ISBN is required' });
+      return;
+    }
+
+    const parsedData = await deepSearchAndParseIreading(
+      String(title || ''),
+      bookNo ? String(bookNo) : undefined,
+      isbn ? String(isbn) : undefined,
+      colorDot ? String(colorDot) : undefined,
+      year ? String(year) : undefined
+    );
+
+    res.json(parsedData);
+  } catch (error: any) {
+    console.error('Error handling /api/ireading/deep-parse:', error);
+    res.status(500).json({
+      found: false,
+      error: error?.message || 'Server internal error',
+      parserEngine: 'Official iReading Server Error Handler',
+    });
+  }
 });
 
 // Server-Sent Events (SSE) stream for instant real-time live visitor & rating updates

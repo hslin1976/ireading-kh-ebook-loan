@@ -16,6 +16,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["自然環境","生態保育","波隆那插畫獎"],
     recommendAge: '6~7歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789579125154',
@@ -33,6 +34,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["職涯啟蒙","興趣探索","認識自我"],
     recommendAge: '6~7歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789579095808',
@@ -49,6 +51,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["開學適應","班級同儕","信誼幼兒文學獎"],
     recommendAge: '6~7歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789863712190',
@@ -64,6 +67,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["同儕相處","情緒管理","溝通和解"],
     recommendAge: '6~7歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789575030315',
@@ -79,6 +83,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["情緒管理","同理心","學思達小學堂"],
     recommendAge: '6~7歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789575030131',
@@ -94,6 +99,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["手足相處","學會分享","情緒同理"],
     recommendAge: '6~7歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789869433709',
@@ -110,6 +116,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["校園想像","人際互動","幽默故事"],
     recommendAge: '6~8歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789869354530',
@@ -126,6 +133,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["時間觀念","生活常規","經典繪本"],
     recommendAge: '6~8歲',
     pageCount: 44,
+    mediaType: 'text',
   },
   {
     isbn: '9789862419670',
@@ -141,6 +149,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["祖孫親情","生命教育","波隆那插畫"],
     recommendAge: '6~8歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789865925406',
@@ -156,6 +165,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["情緒表達","誠實坦承","親子溝通"],
     recommendAge: '6~8歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789867158277',
@@ -171,6 +181,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["自我認同","接納差異","溫馨勵志"],
     recommendAge: '6~8歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9786267367209',
@@ -186,6 +197,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["自然生態","環境保護","生命連結"],
     recommendAge: '6~8歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789575030308',
@@ -201,6 +213,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["生活步調","情緒管理","自我成長"],
     recommendAge: '6~8歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789575036119',
@@ -216,6 +229,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["衛生健康","幽默趣味","動物繪本"],
     recommendAge: '6~8歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789861898605',
@@ -231,6 +245,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["品格教育","金錢觀念","經典繪本"],
     recommendAge: '6~8歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9786269689507',
@@ -247,6 +262,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["社交技巧","情緒管理","人際界線"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789861932422',
@@ -262,6 +278,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["原住民傳說","排灣族神話","文化傳承"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9786263056732',
@@ -278,6 +295,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["面對挫折","誠實負責","橋樑故事"],
     recommendAge: '7~9歲',
     pageCount: 48,
+    mediaType: 'text',
   },
   {
     isbn: '9789864799558',
@@ -294,6 +312,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["閱讀之美","奧斯卡得獎","心靈啟發"],
     recommendAge: '7~9歲',
     pageCount: 56,
+    mediaType: 'text',
   },
   {
     isbn: '9789863209812',
@@ -309,6 +328,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["紐伯瑞金獎","凱迪克獎","感恩生活"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789579095914',
@@ -325,6 +345,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["克服挫折","自我步調","經典繪本"],
     recommendAge: '7~9歲',
     pageCount: 44,
+    mediaType: 'text',
   },
   {
     isbn: '9789862418949',
@@ -340,6 +361,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["情緒管理","挫折忍受","趣味幽默"],
     recommendAge: '7~9歲',
     pageCount: 44,
+    mediaType: 'text',
   },
   {
     isbn: '9786263054493',
@@ -355,6 +377,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["感恩親情","偏鄉創作","溫馨動人"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789575037581',
@@ -370,6 +393,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["校園生活","接納多元","同儕人際"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9786263050327',
@@ -385,6 +409,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["突破性別框架","勇敢逐夢","自信認同"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789579095075',
@@ -400,6 +425,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["寓言故事","勤勞美德","品格教育"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789861615851',
@@ -415,6 +441,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["考試挫折","幽默成長","親子溝通"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789861615431',
@@ -430,6 +457,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["財商教育","尋找價值","冒險故事"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789576421563',
@@ -445,6 +473,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["愛與關懷","平權觀念","信誼幼兒文學獎"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789863711902',
@@ -460,6 +489,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["霸凌防治","保護自己","人際界線"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789865252113',
@@ -475,6 +505,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["橋樑書","校園幽默","語文趣味"],
     recommendAge: '8~10歲',
     pageCount: 112,
+    mediaType: 'text',
   },
   {
     isbn: '9789865253257',
@@ -491,6 +522,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["生命教育","親情緬懷","台灣文化"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789869419086',
@@ -507,6 +539,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["父子親情","多元肯定","溫馨繪本"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789866544057',
@@ -524,6 +557,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["克服限制","真摯友誼","正向思考"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789578640498',
@@ -539,6 +573,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["橋樑書","動物知識","幽默故事"],
     recommendAge: '8~10歲',
     pageCount: 96,
+    mediaType: 'text',
   },
   {
     isbn: '9789869318174',
@@ -554,6 +589,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["跨越差異","情感教育","經典繪本"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789866759116',
@@ -569,6 +605,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["橋樑書","爆笑冒險","熱門暢銷"],
     recommendAge: '8~10歲',
     pageCount: 112,
+    mediaType: 'text',
   },
   {
     isbn: '9789862415535',
@@ -584,6 +621,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["校園生活","君偉上小學","幽默成長"],
     recommendAge: '7~10歲',
     pageCount: 120,
+    mediaType: 'text',
   },
   {
     isbn: '9789862415498',
@@ -599,6 +637,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["行動圖書館","閱讀種子","溫馨感動"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789862410837',
@@ -614,6 +653,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["親情守護","台灣傳統","信誼幼兒文學獎"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789578624764',
@@ -630,6 +670,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["生活安全","常規禮儀","繪本小百科"],
     recommendAge: '6~8歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789861616322',
@@ -645,6 +686,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["書信溫暖","人際溝通","橋樑故事"],
     recommendAge: '8~10歲',
     pageCount: 88,
+    mediaType: 'text',
   },
   {
     isbn: '9789860653939',
@@ -660,6 +702,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["台灣在地","認識手語","友善包容"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789861898179',
@@ -675,6 +718,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["飲食文化","溫馨親情","手繪食譜"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
   },
   {
     isbn: '9789867107701',
@@ -691,6 +735,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["生活習慣","勤勞運動","幽默寓言"],
     recommendAge: '7~9歲',
     pageCount: 36,
+    mediaType: 'text',
   },
   {
     isbn: '9789869549196',
@@ -706,6 +751,7 @@ export const BOOKS_DATA: Book[] = [
     tags: ["閱讀123","橋樑書","爆笑冒險"],
     recommendAge: '8~10歲',
     pageCount: 96,
+    mediaType: 'text',
   },
   {
     isbn: '9789861615158',
@@ -721,8 +767,158 @@ export const BOOKS_DATA: Book[] = [
     tags: ["昆蟲知識","自然科普","幽默成長"],
     recommendAge: '7~9歲',
     pageCount: 40,
+    mediaType: 'text',
+  },
+  // ==========================================
+  // 🎧 有聲童書館藏 (Audio Books Collection)
+  // ==========================================
+  {
+    id: "audio-9789579095808",
+    isbn: "9789579095808",
+    title: "陶樂蒂的開學日 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("陶樂蒂的開學日"),
+    colorDot: "白標",
+    readLevel: 1,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=160251",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=160251",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/160251978957909580820181226091046.jpg",
+    introduce: "《陶樂蒂的開學日》是一本為學齡前兒童與新生入學孩子量身打造的繪本，在於幫助他們適應新環境。故事透過小女孩陶樂蒂的視角，描繪了她開學第一天觀察到班上同學的各種不同特點，如愛生氣、害羞、安靜、外向等。繪本以生動的畫面和簡單的文字，呈現了孩子們在進入新學校時可能經歷的各種情緒，包括興奮、好奇，但也可能伴隨著不安與焦慮。書中強調了觀察與認識新朋友的重要性，並將開學日描繪成一個充滿探索與新體驗的起點，鼓勵孩子們自信地面對新生活，並在其中找到樂趣與歸屬感。本書也被認為是協助孩子順利過渡到學校生活的重要工具。",
+    author: "陶樂蒂",
+    tags: ["有聲書", "開學適應", "班級同儕", "信誼幼兒文學獎"],
+    recommendAge: "6~7歲",
+    pageCount: 36,
+  },
+  {
+    id: "audio-9789575030315",
+    isbn: "9789575030315",
+    title: "小刺蝟愛生氣 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("小刺蝟愛生氣"),
+    colorDot: "白標",
+    readLevel: 1,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=297077",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=297077",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/297077978957503031520222027050644.jpg",
+    introduce: "【學思達小學堂・有聲繪本】孩子的第一套哲學繪本！由臺灣教育界教學革新推手、「學思達教學」創始人張輝誠老師親自策劃。小刺蝟愛生氣，只要一生氣，就會變成一顆刺刺的小刺球。小刺球刺傷了朋友，大家都不敢靠近，這下該怎麼辦才好？透過生動語音陪伴共讀，培養孩子思考、思辨與同理能力。",
+    author: "張輝誠",
+    tags: ["有聲書", "情緒管理", "同理心", "學思達小學堂"],
+    recommendAge: "6~7歲",
+    pageCount: 36,
+  },
+  {
+    id: "audio-9789575030131",
+    isbn: "9789575030131",
+    title: "都是我的 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("都是我的"),
+    colorDot: "白標",
+    readLevel: 1,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=297078",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=297078",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/297078978957503013120222227050613.jpg",
+    introduce: "【學思達小學堂・有聲繪本】愛，讓人學會分享。爸爸媽媽開心的告訴小安，他就快要有個弟弟陪伴他了。小安一點也不開心。因為自從弟弟出生以後，原本只屬於他的一切，都變成要和弟弟一起分享。小安好想好想大聲呼叫，告訴大家：這些都是我的！生動有聲朗讀引導孩子體會手足相處與分享的溫暖。",
+    author: "張輝誠",
+    tags: ["有聲書", "手足相處", "學會分享", "學思達小學堂"],
+    recommendAge: "6~7歲",
+    pageCount: 36,
+  },
+  {
+    id: "audio-9789575030308",
+    isbn: "9789575030308",
+    title: "哲學小學堂5：快一點‧慢一點 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("快一點慢一點"),
+    colorDot: "黑標",
+    readLevel: 2,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=297081",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=297081",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/297081978957503030820222727050609.jpg",
+    introduce: "《快一點‧慢一點》是一本由張輝誠撰寫、許匡匡繪圖的繪本，屬於「哲學小學堂」系列，旨在透過生動有趣的故事引導孩子思考時間的價值與生命的節奏。本書被法國幼兒品格教育推薦繪本，強調練習探索自我生活、調適的重要性。故事內容深刻且幽默的故事貼近生活，適合親子共讀，引發孩子對時間觀念的思考。豐富的插圖生動活潑，被認為是幫助孩子理解時間管理的好書。",
+    author: "張輝誠",
+    tags: ["有聲書", "時間觀念", "自我成長", "生活哲學"],
+    recommendAge: "7~8歲",
+    pageCount: 40,
+  },
+  {
+    id: "audio-9789575037581",
+    isbn: "9789575037581",
+    title: "我們班的新同學 斑傑明‧馬利 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("我們班的新同學斑傑明馬利"),
+    colorDot: "紅標",
+    readLevel: 3,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=290326",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=290326",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/290326978957503758120220225050437.jpg",
+    introduce: "《我們班的新同學 斑傑明‧馬利》是一本繪本，講述一所小學來了一位來自斑馬島的新同學斑傑明‧馬利。他外表與眾不同，引起同學們的好奇。透過日常相處，同學們發現斑傑明和他們有很多相同之處，例如睡覺會打呼、曬太陽會口渴等。故事強調理解、包容與接納的重要性，引導孩子們用開放的心態看待世界，並學習與他人相處的課題。繪本插圖生動，細節豐富，適合親子共讀或課堂討論，探討人際關係、同理心與多元包容等議題。",
+    author: "張輝誠",
+    tags: ["有聲書", "同儕接納", "多元包容", "人際關係"],
+    recommendAge: "7~9歲",
+    pageCount: 44,
+  },
+  {
+    id: "audio-9786263056732",
+    isbn: "9786263056732",
+    title: "短耳兔3：冬冬的考卷不見了 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("短耳兔冬冬的考卷不見了"),
+    colorDot: "紅標",
+    readLevel: 3,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=408408",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=408408",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/408408978626305673220245609051002.jpg",
+    introduce: "《短耳兔3：冬冬的考卷不見了》探討孩子成長過程中犯錯時的焦慮與隱瞞。故事中，冬冬因為數學考零分而藏起考卷，試圖掩蓋真相。作者達文茜透過細膩筆觸，引導讀者理解「誠實」是解決問題的根本，並強調大人同理心對孩子的關鍵支持。本書適合親子共讀，藉由故事情節引發討論，理解孩子的心理負擔，並在面對挫折時建立信任與溝通。",
+    author: "達文茜",
+    tags: ["有聲書", "誠實面對", "情緒同理", "短耳兔系列"],
+    recommendAge: "7~9歲",
+    pageCount: 40,
+  },
+  {
+    id: "audio-9786263050327",
+    isbn: "9786263050327",
+    title: "我是黑天鵝 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("我是黑天鵝"),
+    colorDot: "紅標",
+    readLevel: 3,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=257891",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=257891",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/257891978626305032720210027110724.jpg",
+    introduce: "《我是黑天鵝》是一本探討性別刻板印象與追求夢想的繪本。故事主角黑天鵝是一隻熱愛芭蕾舞的公天鵝，儘管面對外界異樣的眼光，他依然堅持自己的熱情，最終在舞台上展現熱烈光芒。本書透過動人的故事，引導孩子思考性別界線，鼓勵他們勇敢做自己，追尋心中真正熱愛的事物。繪本插圖充滿層次感，並富有藝術感，旨在引發兒童對自我認同的思考與生活連結。",
+    author: "張輝誠",
+    tags: ["有聲書", "打破刻板", "追尋夢想", "自我認同"],
+    recommendAge: "7~9歲",
+    pageCount: 40,
+  },
+  {
+    id: "audio-9789869549196",
+    isbn: "9789869549196",
+    title: "小飛象大冒險 (有聲書)",
+    titleZhuyin: stringToZhuyinChars("小飛象大冒險"),
+    colorDot: "橙標",
+    readLevel: 4,
+    mediaType: "audio",
+    bookMainUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=146977",
+    hyreadUrl: "https://ksml.ebook.hyread.com.tw/bookDetail.jsp?id=146977",
+    bookImgUrl: "https://webcdn2.ebook.hyread.com.tw/bookcover/146977978986954919620183918080534.jpg",
+    introduce: "《小飛象大冒險》是一本適合親子共讀的幽默童書，由陶樂蒂、黃郁欽繪製。故事以富有冒險精神的小象波波意外掉入神秘大洞穴為開端，展開充滿驚喜、緊張與趣味的旅程。作者巧思地在故事中融入內心獨白，使閱讀過程更加生動有趣。書中描繪了動物們熱心互助的精神，並透過洞穴探險的過程，展現了勇氣與同理心的重要。無論是剛開始閱讀的孩子，還是已有閱讀基礎的讀者，都能從中獲得樂趣與啟發，是一本兼具趣味與教育意義的佳作。",
+    author: "陶樂蒂、黃郁欽",
+    tags: ["有聲書", "冒險探索", "幽默故事", "互助合作"],
+    recommendAge: "8~10歲",
+    pageCount: 48,
   },
 ];
+
+export { KH_READING_BOOKS } from './khReadingData';
+import { KH_READING_BOOKS } from './khReadingData';
+
+export const MY_BOOKS_DATA: Book[] = BOOKS_DATA.map((b) => ({
+  ...b,
+  source: 'my_books',
+}));
+
+export const ALL_BOOKS_DATA: Book[] = [...KH_READING_BOOKS, ...MY_BOOKS_DATA];
 
 export const LEVEL_CONFIG = {
   1: {
@@ -772,6 +968,102 @@ export const LEVEL_CONFIG = {
     textColor: 'text-slate-950',
     badgeColor: 'bg-amber-500 text-slate-950 border-amber-600',
     dotColor: 'bg-amber-500 border-2 border-amber-600 shadow-sm',
+  },
+  5: {
+    level: 5,
+    colorDot: '黃標',
+    name: '第 5 級・黃標',
+    ageRange: '8~10 歲・小三小四',
+    description: '初階文字書、趣味探究與校園生活冒險故事',
+    bgColor: 'bg-yellow-400',
+    borderColor: 'border-yellow-500',
+    textColor: 'text-slate-950',
+    badgeColor: 'bg-yellow-400 text-slate-950 border-yellow-500',
+    dotColor: 'bg-yellow-400 border-2 border-yellow-500 shadow-sm',
+  },
+  6: {
+    level: 6,
+    colorDot: '綠標',
+    name: '第 6 級・綠標',
+    ageRange: '9~11 歲・小四小五',
+    description: '中階橋樑書、自然生態科普與多元情境故事',
+    bgColor: 'bg-emerald-500',
+    borderColor: 'border-emerald-600',
+    textColor: 'text-white',
+    badgeColor: 'bg-emerald-500 text-white border-emerald-600',
+    dotColor: 'bg-emerald-500 border-2 border-emerald-600 shadow-sm',
+  },
+  7: {
+    level: 7,
+    colorDot: '藍標',
+    name: '第 7 級・藍標',
+    ageRange: '9~11 歲・小四小五',
+    description: '奇幻探險、日常科學探索與邏輯推理童書',
+    bgColor: 'bg-sky-500',
+    borderColor: 'border-sky-600',
+    textColor: 'text-white',
+    badgeColor: 'bg-sky-500 text-white border-sky-600',
+    dotColor: 'bg-sky-500 border-2 border-sky-600 shadow-sm',
+  },
+  8: {
+    level: 8,
+    colorDot: '靛標',
+    name: '第 8 級・靛標',
+    ageRange: '10~12 歲・小五小六',
+    description: '歷史傳說、生活科技史與社會文化思考',
+    bgColor: 'bg-indigo-600',
+    borderColor: 'border-indigo-700',
+    textColor: 'text-white',
+    badgeColor: 'bg-indigo-600 text-white border-indigo-700',
+    dotColor: 'bg-indigo-600 border-2 border-indigo-700 shadow-sm',
+  },
+  9: {
+    level: 9,
+    colorDot: '紫標',
+    name: '第 9 級・紫標',
+    ageRange: '10~12 歲・小五小六',
+    description: '自然界奧秘、生物多樣性與長篇章節故事',
+    bgColor: 'bg-purple-500',
+    borderColor: 'border-purple-600',
+    textColor: 'text-white',
+    badgeColor: 'bg-purple-500 text-white border-purple-600',
+    dotColor: 'bg-purple-500 border-2 border-purple-600 shadow-sm',
+  },
+  10: {
+    level: 10,
+    colorDot: '銅標',
+    name: '第 10 級・銅標',
+    ageRange: '11~13 歲・高年級/國中',
+    description: '世界名著精讀、仿生科技與深度探險冒險',
+    bgColor: 'bg-amber-700',
+    borderColor: 'border-amber-800',
+    textColor: 'text-white',
+    badgeColor: 'bg-amber-700 text-white border-amber-800',
+    dotColor: 'bg-amber-700 border-2 border-amber-800 shadow-sm',
+  },
+  11: {
+    level: 11,
+    colorDot: '銀標',
+    name: '第 11 級・銀標',
+    ageRange: '11~13 歲・高年級/國中',
+    description: '古文明歷史、偵探推理與環境永續議題',
+    bgColor: 'bg-slate-400',
+    borderColor: 'border-slate-500',
+    textColor: 'text-slate-950',
+    badgeColor: 'bg-slate-300 text-slate-900 border-slate-400',
+    dotColor: 'bg-slate-300 border-2 border-slate-400 shadow-sm',
+  },
+  12: {
+    level: 12,
+    colorDot: '金標',
+    name: '第 12 級・金標',
+    ageRange: '12 歲以上・高年級/國中',
+    description: '世界經典文學、哲學啟蒙與跨領域深度閱讀',
+    bgColor: 'bg-yellow-500',
+    borderColor: 'border-yellow-600',
+    textColor: 'text-slate-950',
+    badgeColor: 'bg-yellow-500 text-slate-950 border-yellow-600',
+    dotColor: 'bg-yellow-400 border-2 border-yellow-500 shadow-sm',
   },
 } as const;
 
