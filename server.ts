@@ -14,8 +14,8 @@ import {
   getVisitorStats,
   incrementVisitorHit,
   BookRatingRecord,
-} from './server/db.js';
-import { deepSearchAndParseIreading } from './server/ireadingParser.js';
+} from './server/db.ts';
+import { deepSearchAndParseIreading } from './server/ireadingParser.ts';
 
 const app = express();
 const server = http.createServer(app);

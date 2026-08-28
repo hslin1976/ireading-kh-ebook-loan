@@ -1,6 +1,6 @@
-import { cleanBookTitle } from '../src/utils/bookLinks.js';
-import { getPreparsedIreadingBook } from '../src/data/ireadingPreparsed.js';
-import { getOfficialIreadingDirectUrl } from '../src/data/ireadingOfficialLinks.js';
+import { cleanBookTitle } from '../src/utils/bookLinks.ts';
+import { getPreparsedIreadingBook } from '../src/data/ireadingPreparsed.ts';
+import { getOfficialIreadingDirectUrl } from '../src/data/ireadingOfficialLinks.ts';
 
 export interface ParsedIreadingBook {
   found: boolean;
